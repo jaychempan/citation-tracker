@@ -62,6 +62,22 @@ nav {
 
 .nav-links a:hover { color: var(--ink); }
 
+.nav-sibling {
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--faint);
+  transition: all 0.15s;
+}
+
+.nav-sibling:hover {
+  color: var(--ink);
+  border-color: var(--ink);
+  background: var(--surface);
+}
+
 .lang-toggle {
   padding: 4px 10px;
   border: 1px solid var(--line);
