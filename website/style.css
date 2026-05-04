@@ -14,7 +14,7 @@
 body {
   background: var(--bg);
   color: var(--ink);
-  font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  font: 18px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -32,7 +32,7 @@ nav {
 .nav-inner {
   max-width: 960px;
   margin: 0 auto;
-  padding: 14px 24px;
+  padding: 16px 32px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -44,14 +44,14 @@ nav {
   align-items: center;
   text-decoration: none;
   font-weight: 700;
-  font-size: 15px;
+  font-size: 17px;
   letter-spacing: -0.01em;
 }
 
 .nav-links {
   display: flex;
   gap: 24px;
-  font-size: 14px;
+  font-size: 16px;
   color: var(--muted);
 }
 
@@ -68,7 +68,7 @@ nav {
   border-radius: 6px;
   background: transparent;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.15s;
@@ -82,14 +82,14 @@ nav {
 main {
   max-width: 960px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 32px;
 }
 
 .hero {
   display: flex;
   align-items: center;
-  gap: 48px;
-  padding: 80px 0 60px;
+  gap: 64px;
+  padding: 72px 0 56px;
 }
 
 .hero-text {
@@ -100,11 +100,11 @@ main {
 .hero-brand {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
 }
 
 .hero-brand h1 {
-  font-size: 36px;
+  font-size: 44px;
   font-weight: 750;
   letter-spacing: -0.02em;
   line-height: 1.1;
@@ -112,48 +112,47 @@ main {
 
 .hero-tagline {
   margin-top: 12px;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 600;
   color: var(--muted);
   letter-spacing: -0.01em;
 }
 
 .hero p {
-  margin-top: 20px;
-  max-width: 440px;
+  margin-top: 16px;
+  max-width: 460px;
   color: var(--muted);
   font-size: 18px;
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
 .preview {
   flex: 0 0 auto;
-  width: 340px;
+  width: 380px;
   border-radius: 12px;
   border: 1px solid var(--line);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
 }
 
+.hero-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+}
+
 .button {
   display: inline-block;
-  margin-top: 32px;
-  padding: 12px 28px;
+  padding: 14px 32px;
   background: var(--accent);
   color: #fff;
   border-radius: 10px;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   text-decoration: none;
   transition: background 0.15s;
 }
 
 .button:hover { background: #0f172a; }
-
-.hero-buttons {
-  display: flex;
-  gap: 12px;
-  margin-top: 32px;
-}
 
 .button.secondary {
   background: transparent;
@@ -170,7 +169,7 @@ main {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 48px;
-  padding: 60px 0;
+  padding: 56px 0;
   border-top: 1px solid var(--line);
 }
 
@@ -180,39 +179,39 @@ main {
 
 .feature-icon {
   display: block;
-  font-size: 28px;
-  margin-bottom: 12px;
+  font-size: 32px;
+  margin-bottom: 10px;
   color: var(--muted);
 }
 
 .feature h3 {
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 700;
   margin-bottom: 6px;
 }
 
 .feature p {
-  font-size: 14px;
+  font-size: 15px;
   color: var(--muted);
   line-height: 1.5;
 }
 
 .install {
-  padding: 60px 0;
+  padding: 56px 0;
   border-top: 1px solid var(--line);
 }
 
 .install h2 {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 750;
   letter-spacing: -0.02em;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .install ol {
   padding-left: 20px;
   color: var(--muted);
-  font-size: 15px;
+  font-size: 17px;
   line-height: 1.8;
 }
 
@@ -222,27 +221,27 @@ main {
 }
 
 .dev {
-  padding: 60px 0;
+  padding: 56px 0;
   border-top: 1px solid var(--line);
 }
 
 .dev h2 {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 750;
   letter-spacing: -0.02em;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .dev ol {
   padding-left: 20px;
   color: var(--muted);
-  font-size: 15px;
+  font-size: 17px;
   line-height: 1.8;
 }
 
 .dev code {
   font-family: var(--mono);
-  font-size: 13px;
+  font-size: 15px;
   padding: 2px 6px;
   background: var(--surface);
   border: 1px solid var(--line);
@@ -251,15 +250,15 @@ main {
 }
 
 .id-hint {
-  margin-top: 28px;
-  padding: 16px 20px;
+  margin-top: 24px;
+  padding: 18px 20px;
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 10px;
 }
 
 .id-hint p {
-  font-size: 13px;
+  font-size: 15px;
   color: var(--muted);
   margin-bottom: 8px;
 }
@@ -267,7 +266,7 @@ main {
 .id-hint code {
   display: block;
   font-family: var(--mono);
-  font-size: 13px;
+  font-size: 14px;
   color: var(--muted);
   word-break: break-all;
 }
@@ -277,9 +276,9 @@ main {
 }
 
 @media (max-width: 768px) {
-  .hero { flex-direction: column; gap: 32px; padding: 60px 0 40px; }
-  .hero h1 { font-size: 32px; }
-  .preview { width: 100%; max-width: 300px; }
-  .features { grid-template-columns: 1fr; gap: 28px; }
+  .hero { flex-direction: column; gap: 36px; padding: 48px 0 36px; }
+  .hero-brand h1 { font-size: 32px; }
+  .preview { width: 100%; max-width: 320px; }
+  .features { grid-template-columns: 1fr; gap: 32px; }
   .nav-links { gap: 16px; }
 }
