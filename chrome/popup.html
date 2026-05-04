@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Google Scholar Citations</title>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <header class="app-header">
+      <img class="logo" src="icons/logo.svg" alt="">
+      <div class="title-block">
+        <h1>Citation Tracker</h1>
+        <p class="title-desc">Track citations. Discover impact.</p>
+      </div>
+      <div class="header-actions">
+        <button id="refreshButton" class="icon-button" type="button" aria-label="Refresh citations" title="Refresh">↻</button>
+        <button id="toggleInputButton" class="icon-button primary-icon" type="button" aria-expanded="false" aria-controls="inputPanel" aria-label="Edit Scholar IDs" title="Edit IDs">+</button>
+      </div>
+    </header>
+
+    <main>
+      <section id="inputPanel" class="input-panel" aria-label="Google Scholar IDs" hidden>
+        <label for="ownScholarId">My Scholar ID</label>
+        <input id="ownScholarId" type="text" spellcheck="false" autocomplete="off" placeholder="Your Scholar user ID">
+        <p class="field-hint">From URL: scholar.google.com/citations?user=<strong>DhtAFkwAAAAJ</strong>&hl=en</p>
+
+        <label for="scholarIds">Other Scholar IDs</label>
+        <textarea id="scholarIds" rows="2" spellcheck="false" aria-label="Other Scholar user IDs" placeholder="Add others, separated by new lines or commas"></textarea>
+
+        <div class="actions">
+          <button id="saveButton" type="button">Save</button>
+          <button id="cancelInputButton" class="secondary" type="button">Cancel</button>
+        </div>
+      </section>
+
+      <section class="metrics" aria-label="Citation update summary">
+        <div>
+          <span class="metric-label">Total</span>
+          <strong id="totalMetric" class="metric-composite"><span id="totalValue">--</span><span id="totalDelta" class="metric-delta"></span></strong>
+        </div>
+        <div>
+          <span class="metric-label">Last change</span>
+          <strong id="deltaMetric">--</strong>
+        </div>
+      </section>
+
+      <section aria-label="Scholar profiles">
+        <div id="profiles" class="profiles"></div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <p id="summary" class="footer-time">Loading...</p>
+      <p id="status" role="status"></p>
+    </footer>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

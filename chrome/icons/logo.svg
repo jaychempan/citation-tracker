@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-label="Citation Tracker">
+  <defs>
+    <linearGradient id="cap" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#374151"/>
+      <stop offset="100%" stop-color="#1f2937"/>
+    </linearGradient>
+    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4b5563"/>
+      <stop offset="100%" stop-color="#374151"/>
+    </linearGradient>
+  </defs>
+  <path d="M5 43 64 17l59 26-59 26L5 43Z" fill="url(#cap)"/>
+  <path d="M24 54v34c0 14 18 25 40 25s40-11 40-25V54L64 74 24 54Z" fill="url(#body)"/>
+  <line x1="122" y1="43" x2="122" y2="98" stroke="#b45309" stroke-width="3" stroke-linecap="round"/>
+  <ellipse cx="122" cy="103" rx="5" ry="6" fill="#b45309"/>
+  <ellipse cx="122" cy="110" rx="3.5" ry="4" fill="#d97706"/>
+</svg>

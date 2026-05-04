@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Citation Tracker</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/svg+xml" href="logo.svg">
+</head>
+<body>
+  <nav>
+    <div class="nav-inner">
+      <a href="#" class="brand">
+        <img src="logo.svg" alt="" width="28" height="28">
+        <span>Citation Tracker</span>
+      </a>
+      <div class="nav-links">
+        <a href="#features" data-i18n="nav_features">功能</a>
+        <a href="#install" data-i18n="nav_install">安装</a>
+        <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+        <button class="lang-toggle" onclick="toggleLang()">EN</button>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <h1 data-i18n-html="hero_title">追踪引用。<br>发现影响力。</h1>
+      <p data-i18n="hero_desc">极简 Chrome 扩展，在工具栏实时监控你的 Google Scholar 引用量。</p>
+      <a href="#install" class="button" data-i18n="hero_btn">安装 Chrome 扩展</a>
+      <img src="preview_v1.1.png" alt="Citation Tracker" class="preview">
+    </section>
+
+    <section id="features" class="features">
+      <div class="feature">
+        <span class="feature-icon">↻</span>
+        <h3 data-i18n="feat1_title">自动刷新</h3>
+        <p data-i18n="feat1_desc">每 30 分钟自动更新引用数据，无需手动查看。</p>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">⬡</span>
+        <h3 data-i18n="feat2_title">徽章计数</h3>
+        <p data-i18n="feat2_desc">引用数直接显示在工具栏徽章上，一目了然。</p>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">△</span>
+        <h3 data-i18n="feat3_title">多账号追踪</h3>
+        <p data-i18n="feat3_desc">同时追踪自己和他人主页，一个弹窗全掌握。</p>
+      </div>
+    </section>
+
+    <section id="install" class="install">
+      <h2 data-i18n="install_title">安装</h2>
+      <ol>
+        <li data-i18n="install_step1">从 Chrome 应用商店安装扩展 <em>（即将上线）</em></li>
+        <li data-i18n="install_step2">点击工具栏图标，输入你的 Google Scholar 用户 ID</li>
+        <li data-i18n="install_step3">完成 — 引用数即刻显示在徽章上</li>
+      </ol>
+      <div class="id-hint">
+        <p data-i18n="hint_label">从 Scholar 主页 URL 中获取你的 ID：</p>
+        <code>scholar.google.com/citations?user=<strong>DhtAFkwAAAAJ</strong>&hl=en</code>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p data-i18n="footer">Citation Tracker — 开源、无分析、无追踪。</p>
+  </footer>
+
+  <script src="i18n.js"></script>
+</body>
+</html>
