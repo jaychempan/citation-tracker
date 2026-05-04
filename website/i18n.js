@@ -4,6 +4,7 @@ const ZH = {
   hero_title: '追踪引用，发现影响力',
   hero_desc: '极简 Chrome 扩展，在工具栏实时监控你的 Google Scholar 引用量。',
   hero_btn: '安装 Chrome 扩展',
+  hero_github: 'GitHub',
   feat1_title: '自动刷新',
   feat1_desc: '每 30 分钟自动更新引用数据，无需手动查看。',
   feat2_title: '徽章计数',
@@ -20,8 +21,7 @@ const ZH = {
   dev_step2: '打开 Chrome，地址栏输入 <code>chrome://extensions</code>',
   dev_step3: '开启右上角「开发者模式」开关',
   dev_step4: '点击「加载已解压的扩展程序」，选择项目的 <code>chrome</code> 目录',
-  dev_step5: '安装完成，工具栏出现 Citation Tracker 图标',
-  footer: 'Citation Tracker — 开源、无分析、无追踪。'
+  dev_step5: '安装完成，工具栏出现 Citation Tracker 图标'
 };
 
 const EN = {
@@ -30,6 +30,7 @@ const EN = {
   hero_title: 'Track citations, discover impact',
   hero_desc: 'A minimal Chrome extension that monitors your Google Scholar citations — right from the toolbar.',
   hero_btn: 'Install for Chrome',
+  hero_github: 'GitHub',
   feat1_title: 'Auto Refresh',
   feat1_desc: 'Citations update every 30 minutes. No manual checks needed.',
   feat2_title: 'Badge Count',
@@ -46,8 +47,7 @@ const EN = {
   dev_step2: 'Open Chrome and go to <code>chrome://extensions</code>',
   dev_step3: 'Enable the "Developer mode" toggle in the top right',
   dev_step4: 'Click "Load unpacked" and select the <code>chrome</code> directory',
-  dev_step5: 'Done — the Citation Tracker icon appears in your toolbar',
-  footer: 'Citation Tracker — open source, no analytics, no tracking.'
+  dev_step5: 'Done — the Citation Tracker icon appears in your toolbar'
 };
 
 let currentLang = localStorage.getItem('lang') || 'zh';
