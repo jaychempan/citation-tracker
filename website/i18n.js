@@ -132,4 +132,20 @@ function toggleLang() {
   applyLang(currentLang === 'zh' ? 'en' : 'zh');
 }
 
+function toggleNav() {
+  document.querySelector('.nav-links').classList.toggle('open');
+  document.querySelector('.nav-toggle').classList.toggle('active');
+}
+
+// Close mobile nav on link click
+document.addEventListener('click', (e) => {
+  const navLinks = document.querySelector('.nav-links');
+  const navToggle = document.querySelector('.nav-toggle');
+  if (!navLinks || !navToggle) return;
+  if (navLinks.classList.contains('open') && !navLinks.contains(e.target) && !navToggle.contains(e.target)) {
+    navLinks.classList.remove('open');
+    navToggle.classList.remove('active');
+  }
+});
+
 applyLang(currentLang);

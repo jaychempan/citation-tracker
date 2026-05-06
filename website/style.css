@@ -30,6 +30,10 @@ nav {
 }
 
 .nav-inner {
+  position: relative;
+}
+
+.nav-inner {
   max-width: 960px;
   margin: 0 auto;
   padding: 16px 32px;
@@ -93,6 +97,37 @@ nav {
 .lang-toggle:hover {
   color: var(--ink);
   border-color: var(--ink);
+}
+
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.nav-toggle span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--ink);
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+
+.nav-toggle.active span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.nav-toggle.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.nav-toggle.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
 }
 
 main {
@@ -390,10 +425,79 @@ footer {
 }
 
 @media (max-width: 768px) {
-  .hero { flex-direction: column; gap: 36px; padding: 48px 0 36px; }
-  .hero-brand h1 { font-size: 32px; }
+  .nav-inner { padding: 14px 20px; }
+
+  .nav-toggle { display: flex; }
+
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    gap: 0;
+    background: rgba(250, 250, 250, 0.97);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+    padding: 8px 20px 16px;
+    font-size: 16px;
+  }
+
+  .nav-links.open { display: flex; }
+
+  .nav-links a {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .nav-links a:last-of-type { border-bottom: none; }
+
+  .nav-sibling {
+    display: inline-block;
+    margin: 4px 0;
+  }
+
+  .lang-toggle {
+    margin-top: 8px;
+    width: fit-content;
+  }
+
+  .hero {
+    flex-direction: column;
+    gap: 36px;
+    padding: 40px 0 28px;
+  }
+
+  .hero-brand h1 { font-size: 30px; }
+
+  .hero-tagline { font-size: 18px; }
+
+  .hero p { font-size: 16px; }
+
   .preview { width: 100%; max-width: 320px; }
-  .features { grid-template-columns: 1fr; gap: 32px; }
-  .nav-links { gap: 16px; }
+
+  .hero-buttons { flex-direction: column; gap: 10px; }
+
+  .hero-buttons .button { text-align: center; }
+
+  .features { grid-template-columns: 1fr; gap: 32px; padding: 40px 0; }
+
+  .install, .dev { padding: 40px 0; }
+
+  .install h2, .dev h2 { font-size: 24px; }
+
+  .install ol, .dev ol { font-size: 15px; line-height: 1.9; }
+
+  .policy { padding: 40px 0 56px; }
+
+  .policy h1 { font-size: 28px; }
+
+  .policy h2 { font-size: 18px; }
+
+  .policy p, .policy ul { font-size: 15px; }
+
   .footer-inner { flex-direction: column; gap: 12px; text-align: center; }
+
+  main { padding: 0 20px; }
 }
