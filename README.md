@@ -8,7 +8,7 @@
 
 A minimal Chrome extension that monitors your Google Scholar citations — right from the toolbar.
 
-[![Chrome Web Store](https://img.shields.io/badge/Chrome%20Web%20Store-coming%20soon-gray?logo=googlechrome&logoColor=white)](https://chromewebstore.google.com)
+[![Chrome Web Store](https://img.shields.io/badge/Chrome%20Web%20Store-Available-blue?logo=googlechrome&logoColor=white)](https://chromewebstore.google.com/detail/citation-tracker/fklkbgfognmpjiaflembdklibehgifkm)
 [![GitHub Pages](https://img.shields.io/badge/website-jaychempan.github.io-blue?logo=github&logoColor=white)](https://jaychempan.github.io/citation-tracker)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
@@ -30,7 +30,13 @@ A minimal Chrome extension that monitors your Google Scholar citations — right
 
 ### Chrome Web Store
 
-*Coming soon*
+Install directly from the Chrome Web Store:
+
+<div align="center">
+  <a href="https://chromewebstore.google.com/detail/citation-tracker/fklkbgfognmpjiaflembdklibehgifkm" target="_blank" rel="noopener">
+    <img src="https://fonts.gstatic.com/s/i/productlogos/chrome_store/v7/192px.svg" alt="Chrome Web Store" width="56" height="56" />
+  </a>
+</div>
 
 ### Developer Mode
 
