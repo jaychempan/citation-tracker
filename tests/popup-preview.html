@@ -3,12 +3,12 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Google Scholar Citations</title>
-    <link rel="stylesheet" href="popup.css">
+    <title>Citation Tracker Preview</title>
+    <link rel="stylesheet" href="../chrome/popup.css">
   </head>
   <body>
     <header class="app-header">
-      <img class="logo" src="icons/logo.svg" alt="">
+      <img class="logo" src="../chrome/icons/logo.svg" alt="">
       <div class="title-block">
         <h1>Citation Tracker</h1>
         <p class="title-desc">Track citations. Discover impact.</p>
@@ -46,18 +46,9 @@
       </section>
 
       <section class="monitor-summary" aria-label="Article monitoring summary">
-        <div>
-          <strong id="monitoredArticles">--</strong>
-          <span>papers watched</span>
-        </div>
-        <div>
-          <strong id="changedArticles">--</strong>
-          <span>papers increased</span>
-        </div>
-        <div>
-          <strong id="articleCitationGain">--</strong>
-          <span>citations gained</span>
-        </div>
+        <div><strong id="monitoredArticles">--</strong><span>papers watched</span></div>
+        <div><strong id="changedArticles">--</strong><span>papers increased</span></div>
+        <div><strong id="articleCitationGain">--</strong><span>citations gained</span></div>
       </section>
 
       <div class="view-tabs" role="tablist" aria-label="Citation tracker views">
@@ -141,14 +132,15 @@
 
     <footer class="app-footer">
       <div class="footer-links">
-        <a href="https://jaychempan.github.io/citation-tracker" target="_blank" rel="noopener" title="Homepage">⌂</a>
-        <a href="https://github.com/jaychempan/citation-tracker" target="_blank" rel="noopener" title="GitHub">⌘</a>
+        <a href="#" title="Homepage">⌂</a>
+        <a href="#" title="GitHub">⌘</a>
       </div>
       <p id="summary" class="footer-time">Loading...</p>
       <p id="status" role="status"></p>
     </footer>
 
-    <script src="paper-utils.js"></script>
-    <script src="popup.js"></script>
+    <script src="../chrome/paper-utils.js"></script>
+    <script src="popup-preview.js"></script>
+    <script src="../chrome/popup.js"></script>
   </body>
 </html>

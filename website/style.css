@@ -3,7 +3,7 @@
   --surface: #ffffff;
   --ink: #111827;
   --muted: #6b7280;
-  --faint: #9ca3af;
+  --faint: #687484;
   --line: #e5e7eb;
   --accent: #1f2937;
   --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -218,14 +218,22 @@ main {
 
 .features {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 48px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0;
   padding: 56px 0;
   border-top: 1px solid var(--line);
 }
 
 .feature {
-  text-align: center;
+  padding: 28px 34px;
+}
+
+.feature:nth-child(even) {
+  border-left: 1px solid var(--line);
+}
+
+.feature:nth-child(n + 3) {
+  border-top: 1px solid var(--line);
 }
 
 .feature-icon {
@@ -481,7 +489,13 @@ footer {
 
   .hero-buttons .button { text-align: center; }
 
-  .features { grid-template-columns: 1fr; gap: 32px; padding: 40px 0; }
+  .features { grid-template-columns: 1fr; gap: 0; padding: 40px 0; }
+
+  .feature { padding: 24px 0; }
+
+  .feature:nth-child(even) { border-left: 0; }
+
+  .feature + .feature { border-top: 1px solid var(--line); }
 
   .install, .dev { padding: 40px 0; }
 
