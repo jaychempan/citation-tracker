@@ -6,13 +6,13 @@
 
 **Track citations. Discover impact.**
 
-A minimal Chrome extension that monitors your Google Scholar citations — right from the toolbar.
+A privacy-friendly Chrome extension that monitors Google Scholar citation totals and shows exactly which papers gained citations.
 
 [![Chrome Web Store](https://img.shields.io/badge/Chrome%20Web%20Store-Available-blue?logo=googlechrome&logoColor=white)](https://chromewebstore.google.com/detail/citation-tracker/fklkbgfognmpjiaflembdklibehgifkm)
 [![GitHub Pages](https://img.shields.io/badge/website-jaychempan.github.io-blue?logo=github&logoColor=white)](https://jaychempan.github.io/citation-tracker)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-<img src="website/preview_v1.1.png" width="320" alt="Citation Tracker Preview">
+<img src="website/preview_v1.2.png" width="420" alt="Citation Tracker article-level citation activity">
 
 </div>
 
@@ -20,11 +20,15 @@ A minimal Chrome extension that monitors your Google Scholar citations — right
 
 ## Features
 
-- **Auto Refresh** — Citations update every 30 minutes, no manual checks needed
-- **Badge Count** — Your citation count is always visible in the toolbar badge
-- **Multi Profile** — Track your own profile and watch others in one popup
-- **Delta Tracking** — See citation changes since last update at a glance
-- **Offline Resilient** — Preserves previous data when network fails
+- **Article-Level Monitoring** - See which papers gained citations on each refresh
+- **Scholar-Style Paper Browser** - Browse cached papers with citation counts, local filtering, profile filters, sorting, incremental loading, and a direct Scholar online search
+- **Detailed Activity** - Review authors, publication, year, before-and-after counts, and Scholar links
+- **Local History** - Keeps up to 200 recent citation events from the last 180 days
+- **Auto Refresh** - Citation totals and papers update every 30 minutes
+- **Multi Profile** - Track your own profile and watch others in one popup
+- **Offline Resilient** - Preserves previous snapshots when Google Scholar or the network fails
+
+The first successful refresh creates a paper baseline. Later refreshes compare each paper by its stable Google Scholar citation ID, so existing citations are not reported as new activity.
 
 ## Install
 
@@ -47,7 +51,7 @@ Install directly from the Chrome Web Store:
 2. Open Chrome and go to `chrome://extensions`
 3. Enable **Developer mode** (top right toggle)
 4. Click **Load unpacked** and select the `chrome` directory
-5. Done — the Citation Tracker icon appears in your toolbar
+5. Done - the Citation Tracker icon appears in your toolbar
 
 ## Usage
 
@@ -58,7 +62,23 @@ Install directly from the Chrome Web Store:
    > `scholar.google.com/citations?user=`**DhtAFkwAAAAJ**`&hl=en`
 
 3. Optionally add other Scholar IDs to track
-4. Click **Save** — citations refresh automatically
+4. Click **Save** - the first refresh creates the article baseline
+5. Open **Papers** to browse cached publications and their citation counts
+6. Open **Activity** after a later refresh to see which papers gained citations
+
+All profile IDs, article snapshots, and citation history remain in `chrome.storage.local` on your device.
+
+## Troubleshooting
+
+If the first refresh says Google Scholar could not be checked:
+
+1. Use **Open Scholar profile** in the error panel.
+2. Confirm that `scholar.google.com` loads in Chrome and complete any Google verification page.
+3. Return to the extension and click refresh.
+
+The extension stops Scholar-to-Google verification redirects before they trigger a cross-origin error. After you complete verification in a normal tab, the next refresh reuses that browser session. It does not request access to `www.google.com`.
+
+The extension reports timeouts, HTTP 403/429 responses, verification redirects or pages, invalid profile IDs, and parsing failures separately. If the profile summary loads but expanded article pagination is blocked, citation totals and the visible article baseline are still preserved with a **Partial coverage** notice.
 
 ## Project Structure
 
@@ -71,19 +91,22 @@ citation-tracker/
 │   ├── popup.css        # Popup styles
 │   ├── manifest.json    # Extension manifest
 │   └── icons/           # Extension icons
+├── tests/               # Parser and citation-diff tests
 ├── website/             # Landing page (GitHub Pages)
 │   ├── index.html
 │   ├── style.css
 │   ├── i18n.js
 │   ├── logo.svg
-│   └── preview_v1.1.png
+│   └── preview_v1.2.png
+├── package.json         # Local test commands
 └── .github/workflows/   # CI/CD
-    └── deploy.yml       # GitHub Pages auto-deploy
+    ├── deploy.yml       # GitHub Pages auto-deploy
+    └── test.yml         # Extension tests and syntax checks
 ```
 
 ## Related
 
-- [CCF DDL Tracker](https://jianchengpan.space/ccf-ddl-tracker/) — Track CCF conference deadlines
+- [CCF DDL Tracker](https://jianchengpan.space/ccf-ddl-tracker/) - Track CCF conference deadlines
 
 ## License
 
