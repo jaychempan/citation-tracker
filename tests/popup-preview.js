@@ -3,8 +3,8 @@ const previewState = {
   ownScholarId: 'DhtAFkwAAAAJ',
   trackedScholarIds: ['abc123AAAAAJ'],
   scholarIds: ['DhtAFkwAAAAJ', 'abc123AAAAAJ'],
-  ownCitations: '1,284',
-  citations: '2,917',
+  ownCitations: '820,884',
+  citations: '822,517',
   ownCitationDelta: 4,
   citationDelta: 7,
   lastUpdated: previewNow,
@@ -21,12 +21,12 @@ const previewState = {
   citationProfiles: [
     {
       id: 'DhtAFkwAAAAJ',
-      name: 'Jiancheng Pan',
+      name: 'Kaiming He',
       url: '#',
-      citations: '1,284',
-      citationsNumber: 1284,
-      hIndex: '18',
-      i10Index: '31',
+      citations: '820,884',
+      citationsNumber: 820884,
+      hIndex: '77',
+      i10Index: '89',
       trackedArticles: 42,
       changedArticles: 2,
       articleCitationGain: 5,
@@ -53,15 +53,15 @@ const previewState = {
 const previewEvents = [
   {
     articleId: 'paper-a',
-    title: 'Learning structured representations for multimodal reasoning',
+    title: 'Deep residual learning for image recognition',
     profileId: 'DhtAFkwAAAAJ',
-    profileName: 'Jiancheng Pan',
+    profileName: 'Kaiming He',
     isOwn: true,
-    authors: 'J. Pan, R. Kumar, M. Ito',
-    publication: 'Transactions on Machine Learning Research, 2025',
-    year: '2025',
-    previousCitations: 31,
-    currentCitations: 35,
+    authors: 'K. He, X. Zhang, S. Ren, J. Sun',
+    publication: 'Proceedings of CVPR, 2016',
+    year: '2016',
+    previousCitations: 255120,
+    currentCitations: 255124,
     delta: 4
   },
   {
@@ -79,15 +79,15 @@ const previewEvents = [
   },
   {
     articleId: 'paper-c',
-    title: 'Efficient visual prompting with sparse spatial priors',
+    title: 'Delving deep into rectifiers',
     profileId: 'DhtAFkwAAAAJ',
-    profileName: 'Jiancheng Pan',
+    profileName: 'Kaiming He',
     isOwn: true,
-    authors: 'J. Pan, E. Voss',
-    publication: 'Proceedings of CVPR, 2023',
-    year: '2023',
-    previousCitations: 11,
-    currentCitations: 12,
+    authors: 'K. He, X. Zhang, S. Ren, J. Sun',
+    publication: 'Proceedings of ICCV, 2015',
+    year: '2015',
+    previousCitations: 74462,
+    currentCitations: 74463,
     delta: 1
   },
   {
@@ -118,46 +118,46 @@ previewState.latestArticleChanges = previewEvents.slice(0, 3);
 previewState.articleSnapshots = {
   DhtAFkwAAAAJ: {
     profileId: 'DhtAFkwAAAAJ',
-    profileName: 'Jiancheng Pan',
+    profileName: 'Kaiming He',
     capturedAt: previewNow,
     articles: [
       {
         id: 'paper-a',
-        title: 'Learning structured representations for multimodal reasoning',
-        authors: 'J. Pan, R. Kumar, M. Ito',
-        publication: 'Transactions on Machine Learning Research, 2025',
-        year: '2025',
-        citations: 35,
+        title: 'Deep residual learning for image recognition',
+        authors: 'K. He, X. Zhang, S. Ren, J. Sun',
+        publication: 'Proceedings of CVPR, 2016',
+        year: '2016',
+        citations: 255124,
         articleUrl: '#article-a',
         citationsUrl: '#citations-a'
       },
       {
         id: 'paper-c',
-        title: 'Efficient visual prompting with sparse spatial priors',
-        authors: 'J. Pan, E. Voss',
-        publication: 'Proceedings of CVPR, 2023',
-        year: '2023',
-        citations: 12,
+        title: 'Delving deep into rectifiers',
+        authors: 'K. He, X. Zhang, S. Ren, J. Sun',
+        publication: 'Proceedings of ICCV, 2015',
+        year: '2015',
+        citations: 74463,
         articleUrl: '#article-c',
         citationsUrl: '#citations-c'
       },
       {
         id: 'paper-e',
-        title: 'Cross-domain segmentation with adaptive prompts',
-        authors: 'J. Pan, N. Silva, K. Rao',
-        publication: 'International Journal of Computer Vision, 2024',
-        year: '2024',
-        citations: 28,
+        title: 'Mask R-CNN',
+        authors: 'K. He, G. Gkioxari, P. Dollar, R. Girshick',
+        publication: 'Proceedings of ICCV, 2017',
+        year: '2017',
+        citations: 68842,
         articleUrl: '#article-e',
         citationsUrl: '#citations-e'
       },
       {
         id: 'paper-f',
-        title: 'Evaluating spatial priors in low-data vision systems',
-        authors: 'J. Pan, L. Anders',
-        publication: 'Pattern Recognition Letters, 2022',
-        year: '2022',
-        citations: 9,
+        title: 'Spatial pyramid pooling in deep convolutional networks',
+        authors: 'K. He, X. Zhang, S. Ren, J. Sun',
+        publication: 'IEEE Transactions on Pattern Analysis and Machine Intelligence, 2015',
+        year: '2015',
+        citations: 54871,
         articleUrl: '#article-f',
         citationsUrl: '#citations-f'
       }
@@ -202,7 +202,9 @@ previewState.articleSnapshots = {
   }
 };
 
-const previewMode = new URLSearchParams(window.location.search).get('mode');
+const previewParams = new URLSearchParams(window.location.search);
+const previewMode = previewParams.get('mode');
+const previewView = previewParams.get('view');
 
 if (previewMode === 'many') {
   const venues = [
@@ -217,7 +219,7 @@ if (previewMode === 'many') {
     previewState.articleSnapshots.DhtAFkwAAAAJ.articles.push({
       id: `paper-extra-${paperNumber}`,
       title: `Additional study of robust visual representations ${paperNumber}`,
-      authors: 'J. Pan, M. Ito, R. Kumar',
+      authors: 'K. He, X. Zhang, S. Ren, J. Sun',
       publication: `${venues[index % venues.length]}, ${2021 + (index % 5)}`,
       year: String(2021 + (index % 5)),
       citations: 7 + index,
@@ -272,3 +274,9 @@ window.chrome = {
     }
   }
 };
+
+window.addEventListener('load', () => {
+  if (previewView) {
+    document.getElementById(`${previewView}Tab`)?.click();
+  }
+});
