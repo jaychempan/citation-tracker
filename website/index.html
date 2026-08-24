@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Citation Tracker automatically tracks Google Scholar citation changes and shows which papers gained citations.">
+  <meta name="description" content="Citation Tracker visualizes annual Google Scholar citation trends, research impact, and paper-level citation gains.">
   <meta name="theme-color" content="#f4f7f5">
   <title>Citation Tracker — 追踪每一次学术影响力</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=1.4.0">
   <link rel="icon" type="image/svg+xml" href="logo.svg">
 </head>
 <body>
@@ -38,7 +38,7 @@
           <h1 id="hero-title">Citation Tracker</h1>
         </div>
         <p class="hero-tagline" data-i18n="hero_title">追踪引用，发现影响力</p>
-        <p data-i18n="hero_desc">自动追踪 Google Scholar 引用变化，并准确找出新增引用的论文。</p>
+        <p data-i18n="hero_desc">自动追踪 Google Scholar 引用变化，可视化年度趋势与影响力，并准确找出新增引用的论文。</p>
         <div class="hero-buttons">
           <a href="https://chromewebstore.google.com/detail/citation-tracker/fklkbgfognmpjiaflembdklibehgifkm" target="_blank" rel="noopener" class="button"><span data-i18n="hero_btn">安装 Chrome 扩展</span><span aria-hidden="true">↗</span></a>
           <a href="https://github.com/jaychempan/citation-tracker" target="_blank" rel="noopener" class="button secondary"><span data-i18n="hero_github">查看源代码</span></a>
@@ -47,7 +47,7 @@
       </div>
       <div class="preview-wrap">
         <div class="preview-glow"></div>
-        <img src="preview_hd.png" alt="Citation Tracker article-level citation activity" class="preview" width="840" height="1348">
+        <img src="preview_v1.4@2x.png" alt="Citation Tracker annual citations and impact radar" class="preview" width="840" height="1053">
         <div class="floating-stat" aria-hidden="true"><span>+12</span><small data-i18n="preview_badge">新增引用</small></div>
       </div>
     </section>
@@ -63,6 +63,16 @@
         <span class="feature-icon">01</span>
         <h3 data-i18n="feat1_title">自动刷新</h3>
         <p data-i18n="feat1_desc">每 30 分钟自动更新引用数据，无需手动查看。</p>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">05</span>
+        <h3 data-i18n="feat5_title">年度引用趋势</h3>
+        <p data-i18n="feat5_desc">自动读取 Scholar 年度数据，用清晰柱状图呈现长期增长和同比变化。</p>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">06</span>
+        <h3 data-i18n="feat6_title">影响力雷达</h3>
+        <p data-i18n="feat6_desc">综合引用、指数、论文覆盖与增长动量，快速理解研究影响力结构。</p>
       </div>
       <div class="feature">
         <span class="feature-icon">02</span>
@@ -170,6 +180,6 @@
     </div>
   </footer>
 
-  <script src="i18n.js"></script>
+  <script src="i18n.js?v=1.4.0"></script>
 </body>
 </html>

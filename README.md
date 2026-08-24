@@ -12,7 +12,7 @@ A privacy-friendly Chrome extension that monitors Google Scholar citation totals
 [![GitHub Pages](https://img.shields.io/badge/website-jaychempan.github.io-blue?logo=github&logoColor=white)](https://jaychempan.github.io/citation-tracker)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-<img src="website/preview_v1.2.png" width="420" alt="Citation Tracker article-level citation activity">
+<img src="website/preview_v1.4@2x.png" width="420" alt="Citation Tracker annual citations and impact radar">
 
 </div>
 
@@ -23,6 +23,8 @@ A privacy-friendly Chrome extension that monitors Google Scholar citation totals
 - **Article-Level Monitoring** - See which papers gained citations on each refresh
 - **Scholar-Style Paper Browser** - Browse cached papers with citation counts, local filtering, profile filters, sorting, incremental loading, and a direct Scholar online search
 - **Detailed Activity** - Review authors, publication, year, before-and-after counts, and Scholar links
+- **Annual Citation Trends** - Visualize public Scholar history with year-over-year change
+- **Impact Radar** - Compare normalized citation, index, reach, and momentum signals
 - **Local History** - Keeps up to 200 recent citation events from the last 180 days
 - **Auto Refresh** - Citation totals and papers update every 30 minutes
 - **Multi Profile** - Track your own profile and watch others in one popup
@@ -97,7 +99,7 @@ citation-tracker/
 │   ├── style.css
 │   ├── i18n.js
 │   ├── logo.svg
-│   └── preview_v1.2.png
+│   └── preview_v1.4@2x.png
 ├── package.json         # Local test commands
 └── .github/workflows/   # CI/CD
     ├── deploy.yml       # GitHub Pages auto-deploy

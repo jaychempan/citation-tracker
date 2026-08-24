@@ -24,17 +24,22 @@ const paperProfileFilter = document.getElementById('paperProfileFilter');
 const paperSort = document.getElementById('paperSort');
 const loadMorePapers = document.getElementById('loadMorePapers');
 const profiles = document.getElementById('profiles');
+const insights = document.getElementById('insights');
+const insightsProfileFilter = document.getElementById('insightsProfileFilter');
+const insightsTab = document.getElementById('insightsTab');
 const activityTab = document.getElementById('activityTab');
 const papersTab = document.getElementById('papersTab');
 const profilesTab = document.getElementById('profilesTab');
 const activityView = document.getElementById('activityView');
 const papersView = document.getElementById('papersView');
 const profilesView = document.getElementById('profilesView');
+const insightsView = document.getElementById('insightsView');
 const statusText = document.getElementById('status');
 
 const PAPER_PAGE_SIZE = 20;
 const viewEntries = [
   { id: 'profiles', tab: profilesTab, panel: profilesView },
+  { id: 'insights', tab: insightsTab, panel: insightsView },
   { id: 'papers', tab: papersTab, panel: papersView },
   { id: 'activity', tab: activityTab, panel: activityView }
 ];
@@ -661,6 +666,109 @@ function renderProfiles(items = []) {
   });
 }
 
+function createImpactRadar(profile, state) {
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 280 240');
+  svg.setAttribute('role', 'img');
+  svg.setAttribute('aria-label', `Impact radar for ${profile.name || profile.id}`);
+  const center = { x: 140, y: 112 };
+  const radius = 76;
+  const snapshot = (state.articleSnapshots || {})[profile.id];
+  const articleList = snapshot && Array.isArray(snapshot.articles) ? snapshot.articles : [];
+  const cited = articleList.filter(article => article.citations > 0).length;
+  const history = Array.isArray(profile.citationHistory) ? profile.citationHistory : [];
+  const latest = history.at(-1)?.citations || 0;
+  const previous = history.at(-2)?.citations || latest || 1;
+  const metrics = [
+    ['Citations', Math.min(100, Math.log10((profile.citationsNumber || 0) + 1) / 6 * 100)],
+    ['h-index', Math.min(100, (parseMetricNumber(profile.hIndex) || 0) / 100 * 100)],
+    ['i10-index', Math.min(100, (parseMetricNumber(profile.i10Index) || 0) / 150 * 100)],
+    ['Paper reach', articleList.length ? cited / articleList.length * 100 : 0],
+    ['Momentum', Math.min(100, latest / Math.max(previous, 1) * 65)]
+  ];
+  const point = (index, value = 100) => {
+    const angle = -Math.PI / 2 + index * Math.PI * 2 / metrics.length;
+    const scale = value / 100;
+    return `${center.x + Math.cos(angle) * radius * scale},${center.y + Math.sin(angle) * radius * scale}`;
+  };
+
+  [1, .66, .33].forEach(scale => {
+    const grid = document.createElementNS(svg.namespaceURI, 'polygon');
+    grid.setAttribute('points', metrics.map((_, index) => point(index, scale * 100)).join(' '));
+    grid.setAttribute('class', 'radar-grid');
+    svg.append(grid);
+  });
+  metrics.forEach((metric, index) => {
+    const axis = document.createElementNS(svg.namespaceURI, 'line');
+    const [x, y] = point(index).split(',');
+    axis.setAttribute('x1', center.x); axis.setAttribute('y1', center.y);
+    axis.setAttribute('x2', x); axis.setAttribute('y2', y); axis.setAttribute('class', 'radar-axis');
+    const label = document.createElementNS(svg.namespaceURI, 'text');
+    const [labelX, labelY] = point(index, 122).split(',');
+    label.setAttribute('x', labelX); label.setAttribute('y', labelY);
+    label.setAttribute('class', 'radar-label'); label.textContent = metric[0];
+    svg.append(axis, label);
+  });
+  const shape = document.createElementNS(svg.namespaceURI, 'polygon');
+  shape.setAttribute('points', metrics.map((metric, index) => point(index, metric[1])).join(' '));
+  shape.setAttribute('class', 'radar-shape');
+  svg.append(shape);
+  return svg;
+}
+
+function renderInsights(state, orderedProfiles) {
+  const previousSelection = insightsProfileFilter.value;
+  insightsProfileFilter.replaceChildren();
+  orderedProfiles.forEach(profile => {
+    const option = document.createElement('option');
+    option.value = profile.id;
+    option.textContent = profile.isOwn ? `${profile.name || profile.id} (You)` : profile.name || profile.id;
+    insightsProfileFilter.append(option);
+  });
+  if (orderedProfiles.some(profile => profile.id === previousSelection)) {
+    insightsProfileFilter.value = previousSelection;
+  }
+  const profile = orderedProfiles.find(item => item.id === insightsProfileFilter.value) || orderedProfiles[0];
+  insights.replaceChildren();
+  if (!profile) {
+    insights.append(createEmptyState('No insights yet', 'Add a public Scholar profile to visualize its impact.'));
+    return;
+  }
+  const history = Array.isArray(profile.citationHistory) ? profile.citationHistory : [];
+  const chartCard = document.createElement('article'); chartCard.className = 'insight-card annual-card';
+  const header = document.createElement('div'); header.className = 'insight-card-header';
+  header.innerHTML = '<div><h3>Annual citations</h3><p>Public Google Scholar history</p></div>';
+  if (history.length) {
+    const current = history.at(-1).citations;
+    const prior = history.at(-2)?.citations;
+    const delta = document.createElement('strong'); delta.className = 'insight-delta';
+    delta.textContent = Number.isFinite(prior) && prior > 0 ? `${current >= prior ? '+' : ''}${Math.round((current - prior) / prior * 100)}% YoY` : formatNumber(current);
+    header.append(delta);
+  }
+  chartCard.append(header);
+  if (history.length) {
+    const chart = document.createElement('div'); chart.className = 'annual-chart';
+    const max = Math.max(...history.map(item => item.citations), 1);
+    history.slice(-12).forEach((item, index, visibleHistory) => {
+      const column = document.createElement('div'); column.className = 'annual-column';
+      const value = document.createElement('span'); value.className = 'annual-value'; value.textContent = formatNumber(item.citations);
+      value.hidden = visibleHistory.length > 8 && index % 2 === 1 && index !== visibleHistory.length - 1;
+      const bar = document.createElement('i'); bar.style.height = `${Math.max(4, item.citations / max * 100)}%`;
+      bar.title = `${item.year}: ${formatNumber(item.citations)} citations`;
+      const year = document.createElement('small'); year.textContent = item.year;
+      column.append(value, bar, year); chart.append(column);
+    });
+    chartCard.append(chart);
+  } else {
+    const empty = document.createElement('p'); empty.className = 'insight-empty'; empty.textContent = 'Refresh this profile to load its annual citation history.'; chartCard.append(empty);
+  }
+  const radarCard = document.createElement('article'); radarCard.className = 'insight-card radar-card';
+  radarCard.innerHTML = '<div class="insight-card-header"><div><h3>Impact radar</h3><p>Relative profile snapshot</p></div></div>';
+  radarCard.append(createImpactRadar(profile, state));
+  const note = document.createElement('p'); note.className = 'radar-note'; note.textContent = 'Signals are normalized for visual comparison, not an academic ranking.'; radarCard.append(note);
+  insights.append(chartCard, radarCard);
+}
+
 function renderState(state) {
   currentState = state;
   const ownScholarId = state.ownScholarId || (state.scholarIds || [])[0] || '';
@@ -682,6 +790,7 @@ function renderState(state) {
   renderActivity(state);
   renderPapers(state);
   renderProfiles(orderedProfiles);
+  renderInsights(state, orderedProfiles);
 
   if (state.lastUpdateError) {
     setStatus('Last refresh failed', true);
@@ -801,6 +910,9 @@ profileFilter.addEventListener('change', () => {
   if (currentState) {
     renderActivity(currentState);
   }
+});
+insightsProfileFilter.addEventListener('change', () => {
+  if (currentState) renderState(currentState);
 });
 paperSearch.addEventListener('input', () => {
   visiblePaperCount = PAPER_PAGE_SIZE;

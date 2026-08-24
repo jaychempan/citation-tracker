@@ -53,6 +53,7 @@
 
       <div class="view-tabs" role="tablist" aria-label="Citation tracker views">
         <button id="profilesTab" class="view-tab active" type="button" role="tab" aria-selected="true" aria-controls="profilesView">Profiles</button>
+        <button id="insightsTab" class="view-tab" type="button" role="tab" aria-selected="false" aria-controls="insightsView">Insights</button>
         <button id="papersTab" class="view-tab" type="button" role="tab" aria-selected="false" aria-controls="papersView">Papers</button>
         <button id="activityTab" class="view-tab" type="button" role="tab" aria-selected="false" aria-controls="activityView">Activity</button>
       </div>
@@ -74,6 +75,14 @@
           <div class="activity-skeleton" aria-hidden="true"></div>
           <div class="activity-skeleton short" aria-hidden="true"></div>
         </div>
+      </section>
+
+      <section id="insightsView" class="view-panel" role="tabpanel" aria-labelledby="insightsTab" hidden>
+        <div class="section-heading insights-heading">
+          <div><h2>Impact insights</h2><p>Annual citations and research profile signals</p></div>
+          <label class="filter-label" for="insightsProfileFilter"><span>Profile</span><select id="insightsProfileFilter" aria-label="Select impact profile"></select></label>
+        </div>
+        <div id="insights" class="insights" aria-live="polite"></div>
       </section>
 
       <section id="papersView" class="view-panel" role="tabpanel" aria-labelledby="papersTab" hidden>

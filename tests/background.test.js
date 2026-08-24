@@ -34,7 +34,7 @@ function articleRow({
   `;
 }
 
-function profileHtml({ total = 7, hIndex = 2, i10Index = 1, rows = [], hasMore = false } = {}) {
+function profileHtml({ total = 7, hIndex = 2, i10Index = 1, rows = [], hasMore = false, history = [] } = {}) {
   return `
     <div id="gsc_prf_in">Dr. Mei &amp; Lin</div>
     <table>
@@ -43,9 +43,25 @@ function profileHtml({ total = 7, hIndex = 2, i10Index = 1, rows = [], hasMore =
       <tr><td class="gsc_rsb_sc1"><a>i10-index</a></td><td class="gsc_rsb_std">${i10Index}</td><td class="gsc_rsb_std">0</td></tr>
       <tbody>${rows.join('')}</tbody>
     </table>
+    <div id="gsc_g">${history.map(item => `<span class="gsc_g_t">${item.year}</span><a class="gsc_g_a"><span class="gsc_g_al">${item.citations}</span></a>`).join('')}</div>
     <button id="gsc_bpf_more" ${hasMore ? '' : 'disabled'}>Show more</button>
   `;
 }
+
+test('parses annual citation history from the Scholar graph', () => {
+  const { context } = loadBackground();
+  const html = profileHtml({ history: [
+    { year: 2022, citations: 4 },
+    { year: 2023, citations: 18 },
+    { year: 2024, citations: 203 }
+  ] });
+
+  assert.deepEqual(Array.from(context.parseCitationHistory(html), item => ({ ...item })), [
+    { year: 2022, citations: 4 },
+    { year: 2023, citations: 18 },
+    { year: 2024, citations: 203 }
+  ]);
+});
 
 function loadBackground(initialStorage = {}, fetchImpl = async () => {
   throw new Error('Unexpected fetch');
@@ -297,7 +313,9 @@ test('preserves citation totals and a partial baseline when expanded article loa
       ok: true,
       status: 200,
       async text() {
-        return profileHtml({ total: 190, rows: summaryRows, hasMore: true });
+        return profileHtml({ total: 190, rows: summaryRows, hasMore: true, history: [
+          { year: 2025, citations: 80 }, { year: 2026, citations: 110 }
+        ] });
       }
     };
   };
@@ -306,6 +324,9 @@ test('preserves citation totals and a partial baseline when expanded article loa
   const profile = await context.fetchScholarProfile('profile1');
 
   assert.equal(profile.citationsNumber, 190);
+  assert.deepEqual(Array.from(profile.citationHistory, item => ({ ...item })), [
+    { year: 2025, citations: 80 }, { year: 2026, citations: 110 }
+  ]);
   assert.equal(profile.articles.length, 20);
   assert.equal(profile.articlesComplete, false);
   assert.match(profile.articleFetchError, /Citation totals were updated/);

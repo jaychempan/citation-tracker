@@ -27,6 +27,14 @@ const previewState = {
       citationsNumber: 820884,
       hIndex: '77',
       i10Index: '89',
+      citationHistory: [
+        { year: 2016, citations: 5586 }, { year: 2017, citations: 13909 },
+        { year: 2018, citations: 30268 }, { year: 2019, citations: 52611 },
+        { year: 2020, citations: 71864 }, { year: 2021, citations: 97402 },
+        { year: 2022, citations: 114267 }, { year: 2023, citations: 124763 },
+        { year: 2024, citations: 130311 }, { year: 2025, citations: 131936 },
+        { year: 2026, citations: 80322 }
+      ],
       trackedArticles: 42,
       changedArticles: 2,
       articleCitationGain: 5,
@@ -40,6 +48,11 @@ const previewState = {
       citationsNumber: 1633,
       hIndex: '21',
       i10Index: '39',
+      citationHistory: [
+        { year: 2022, citations: 48 }, { year: 2023, citations: 112 },
+        { year: 2024, citations: 284 }, { year: 2025, citations: 506 },
+        { year: 2026, citations: 391 }
+      ],
       trackedArticles: 44,
       changedArticles: 1,
       articleCitationGain: 2,

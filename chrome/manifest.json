@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Citation Tracker",
-  "description": "Track citation totals, browse papers, and see exactly which papers gained citations.",
-  "version": "1.3.0",
+  "description": "Track citation totals, annual trends, research impact, and paper-level citation gains.",
+  "version": "1.4.0",
   "permissions": [
     "alarms",
     "storage"

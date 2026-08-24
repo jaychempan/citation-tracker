@@ -137,6 +137,16 @@ function parseFirstScholarMetric(html) {
   return match && match[1] ? match[1].trim() : null;
 }
 
+function parseCitationHistory(html) {
+  const years = [...String(html || '').matchAll(/<span[^>]*class="[^"]*\bgsc_g_t\b[^"]*"[^>]*>([\s\S]*?)<\/span>/gi)]
+    .map(match => Number.parseInt(decodeHtml(match[1]), 10));
+  const counts = [...String(html || '').matchAll(/<span[^>]*class="[^"]*\bgsc_g_al\b[^"]*"[^>]*>([\s\S]*?)<\/span>/gi)]
+    .map(match => parseCountNumber(decodeHtml(match[1])));
+
+  return years.map((year, index) => ({ year, citations: counts[index] }))
+    .filter(item => Number.isFinite(item.year) && Number.isFinite(item.citations));
+}
+
 function getArticleId(profileId, articleUrl, title, year) {
   if (articleUrl) {
     try {
@@ -365,6 +375,7 @@ async function fetchScholarProfile(id) {
     citationsNumber: parseCountNumber(count),
     hIndex: parseScholarMetric(summaryHtml, 'h-index') || 'N/A',
     i10Index: parseScholarMetric(summaryHtml, 'i10-index') || 'N/A',
+    citationHistory: parseCitationHistory(summaryHtml),
     articles,
     articleCount: articles.length,
     articlePagesFetched: pagesFetched,
