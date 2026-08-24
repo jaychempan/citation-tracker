@@ -1,10 +1,16 @@
 const ZH = {
   nav_features: '功能',
   nav_install: '安装',
+  hero_eyebrow: '为研究者打造的轻量工具',
   hero_title: '追踪引用，发现影响力',
   hero_desc: '自动追踪 Google Scholar 引用变化，并准确找出新增引用的论文。',
   hero_btn: '安装 Chrome 扩展',
   hero_github: 'GitHub',
+  hero_note: '免费、开源 · 数据仅保存在你的浏览器中',
+  preview_badge: '新增引用',
+  stat_refresh: '自动刷新',
+  stat_local: '本地存储',
+  stat_account: '无需注册',
   feat1_title: '自动刷新',
   feat1_desc: '每 30 分钟自动更新引用数据，无需手动查看。',
   feat2_title: '论文级增量',
@@ -13,7 +19,13 @@ const ZH = {
   feat3_desc: '同时追踪自己和他人主页，一个弹窗全掌握。',
   feat4_title: '论文列表',
   feat4_desc: '浏览论文与引用数，筛选本地快照，并可一键打开 Scholar 在线检索。',
+  workflow_kicker: '保持专注', workflow_title: '引用变化，一眼看清', workflow_desc: '不再反复打开 Scholar，也不用自己记录数字。Citation Tracker 把变化整理成清晰的时间线。',
+  flow1_title: '添加 Scholar 主页', flow1_desc: '输入用户 ID，同时追踪自己与关注的研究者。', flow2_title: '自动建立论文基线', flow2_desc: '首次同步保存论文快照，后续刷新精准比较变化。', flow3_title: '查看新增引用', flow3_desc: '新增数量、对应论文和发生时间，都在活动列表中。',
+  demo_title: '最新活动', demo_period: '最近 30 天', demo_citations: '次新增引用',
+  privacy_kicker: '隐私优先', privacy_callout_title: '你的学术数据，只属于你', privacy_callout_desc: '无需账号、没有分析脚本、没有云端数据库。主页 ID、论文快照与引用历史全部保存在 Chrome 本地存储中。', privacy_link: '阅读隐私政策 <span aria-hidden="true">→</span>',
   install_title: '安装',
+  install_kicker: '三步开始',
+  install_desc: '不到一分钟，让引用变化自动来找你。',
   install_step1: '从 <a href="https://chromewebstore.google.com/detail/citation-tracker/fklkbgfognmpjiaflembdklibehgifkm" target="_blank" rel="noopener">Chrome 应用商店</a>安装扩展',
   install_step2: '点击工具栏图标，输入你的 Google Scholar 用户 ID',
   install_step3: '首次刷新建立论文基线，之后自动记录新增引用',
@@ -24,6 +36,8 @@ const ZH = {
   dev_step3: '开启右上角「开发者模式」开关',
   dev_step4: '点击「加载已解压的扩展程序」，选择项目的 <code>chrome</code> 目录',
   dev_step5: '安装完成，工具栏出现 Citation Tracker 图标',
+  faq_title: '常见问题', faq1_q: '它会读取我的 Google 账号吗？', faq1_a: '不会。扩展仅请求公开的 Google Scholar 引用数据，不读取账号信息、邮件或浏览历史。', faq2_q: '为什么第一次刷新没有显示新增引用？', faq2_a: '第一次刷新用于建立论文基线。从第二次成功刷新开始，扩展才会比较并记录新增引用。', faq3_q: '可以追踪多位研究者吗？', faq3_a: '可以。你可以添加多个 Scholar 用户 ID，并按主页筛选论文与引用活动。', faq4_q: '数据可以导出吗？', faq4_a: '当前版本专注于本地追踪和浏览，暂未提供导出功能。你可以在 GitHub 提交功能建议。',
+  cta_title: '让每一次引用增长，都被看见', cta_desc: '安装 Citation Tracker，把重复检查交给浏览器。',
   nav_home: '首页',
   privacy_title: '隐私政策',
   privacy_updated: '最后更新：2026 年 7 月 25 日',
@@ -62,10 +76,16 @@ const ZH = {
 const EN = {
   nav_features: 'Features',
   nav_install: 'Install',
+  hero_eyebrow: 'A lightweight tool for researchers',
   hero_title: 'Track citations, discover impact',
   hero_desc: 'Track Google Scholar citation changes and see exactly which papers gained citations.',
   hero_btn: 'Install for Chrome',
-  hero_github: 'GitHub',
+  hero_github: 'View source',
+  hero_note: 'Free and open source · Data stays in your browser',
+  preview_badge: 'new citations',
+  stat_refresh: 'Auto refresh',
+  stat_local: 'Stored locally',
+  stat_account: 'Account needed',
   feat1_title: 'Auto Refresh',
   feat1_desc: 'Citations update every 30 minutes. No manual checks needed.',
   feat2_title: 'Paper-Level Changes',
@@ -74,7 +94,13 @@ const EN = {
   feat3_desc: 'Track your own profile and watch others in one popup.',
   feat4_title: 'Paper Browser',
   feat4_desc: 'Browse cached papers and citation counts, then open Scholar online search when needed.',
+  workflow_kicker: 'Stay focused', workflow_title: 'See every change at a glance', workflow_desc: 'Stop reopening Scholar and recording numbers by hand. Citation Tracker turns every change into a clear timeline.',
+  flow1_title: 'Add Scholar profiles', flow1_desc: 'Enter a user ID to track yourself and researchers you follow.', flow2_title: 'Build a paper baseline', flow2_desc: 'The first sync saves a snapshot so later refreshes can compare precisely.', flow3_title: 'Review new citations', flow3_desc: 'See the gain, the paper behind it, and when it happened.',
+  demo_title: 'Latest activity', demo_period: 'Last 30 days', demo_citations: 'new citations',
+  privacy_kicker: 'Privacy by design', privacy_callout_title: 'Your research data stays yours', privacy_callout_desc: 'No account, no analytics, and no cloud database. Profile IDs, paper snapshots, and citation history stay in Chrome local storage.', privacy_link: 'Read privacy policy <span aria-hidden="true">→</span>',
   install_title: 'Install',
+  install_kicker: 'Get started in 3 steps',
+  install_desc: 'Take less than a minute, then let citation changes come to you.',
   install_step1: 'Install the extension from the <a href="https://chromewebstore.google.com/detail/citation-tracker/fklkbgfognmpjiaflembdklibehgifkm" target="_blank" rel="noopener">Chrome Web Store</a>',
   install_step2: 'Click the toolbar icon and enter your Google Scholar user ID',
   install_step3: 'The first refresh creates a paper baseline, then new citations are recorded automatically',
@@ -85,6 +111,8 @@ const EN = {
   dev_step3: 'Enable the "Developer mode" toggle in the top right',
   dev_step4: 'Click "Load unpacked" and select the <code>chrome</code> directory',
   dev_step5: 'Done - the Citation Tracker icon appears in your toolbar',
+  faq_title: 'Frequently asked questions', faq1_q: 'Does it access my Google account?', faq1_a: 'No. The extension only requests public Google Scholar citation data. It does not read account data, email, or browsing history.', faq2_q: 'Why are there no new citations after the first refresh?', faq2_a: 'The first refresh builds your paper baseline. Changes are compared and recorded from the next successful refresh onward.', faq3_q: 'Can I track multiple researchers?', faq3_a: 'Yes. Add multiple Scholar user IDs and filter papers or citation activity by profile.', faq4_q: 'Can I export the data?', faq4_a: 'The current release focuses on local tracking and browsing. Export is not available yet, but suggestions are welcome on GitHub.',
+  cta_title: 'Make every citation gain visible', cta_desc: 'Install Citation Tracker and let your browser handle the repetitive checking.',
   nav_home: 'Home',
   privacy_title: 'Privacy Policy',
   privacy_updated: 'Last updated: July 25, 2026',
@@ -139,8 +167,11 @@ function toggleLang() {
 }
 
 function toggleNav() {
-  document.querySelector('.nav-links').classList.toggle('open');
-  document.querySelector('.nav-toggle').classList.toggle('active');
+  const navLinks = document.querySelector('.nav-links');
+  const navToggle = document.querySelector('.nav-toggle');
+  const isOpen = navLinks.classList.toggle('open');
+  navToggle.classList.toggle('active', isOpen);
+  navToggle.setAttribute('aria-expanded', String(isOpen));
 }
 
 // Close mobile nav on link click
@@ -151,6 +182,7 @@ document.addEventListener('click', (e) => {
   if (navLinks.classList.contains('open') && !navLinks.contains(e.target) && !navToggle.contains(e.target)) {
     navLinks.classList.remove('open');
     navToggle.classList.remove('active');
+    navToggle.setAttribute('aria-expanded', 'false');
   }
 });
 
