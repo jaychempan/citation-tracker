@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Citation Tracker visualizes annual Google Scholar citation trends, research impact, and paper-level citation gains.">
-  <meta name="theme-color" content="#f4f7f5">
-  <title>Citation Tracker — 追踪每一次学术影响力</title>
-  <link rel="stylesheet" href="style.css?v=1.4.0">
+  <meta name="description" content="追踪 Google Scholar 论文的被引变化，查看年度趋势与学术影响。支持中英文和松绿、石墨主题。">
+  <meta name="theme-color" content="#f2f5f1">
+  <title>Citation Tracker — 追踪被引变化，了解学术影响</title>
+  <link rel="stylesheet" href="style.css?v=1.5.0">
   <link rel="icon" type="image/svg+xml" href="logo.svg">
 </head>
 <body>
@@ -16,15 +16,16 @@
         <img src="logo.svg" alt="" width="28" height="28">
         <span>Citation Tracker</span>
       </a>
-      <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav-links" onclick="toggleNav()">
+      <button class="nav-toggle" type="button" aria-label="菜单" data-i18n-aria-label="menu_label" aria-expanded="false" aria-controls="nav-links" onclick="toggleNav()">
         <span></span><span></span><span></span>
       </button>
       <div class="nav-links" id="nav-links">
         <a href="#features" data-i18n="nav_features">功能</a>
         <a href="#install" data-i18n="nav_install">安装</a>
+        <a href="#updates" data-i18n="nav_updates">更新日志</a>
         <a href="https://github.com/jaychempan/citation-tracker" target="_blank" rel="noopener">GitHub</a>
         <a href="https://jianchengpan.space/ccf-ddl-tracker/" target="_blank" rel="noopener" class="nav-sibling" data-i18n="nav_ccf">CCF DDL Tracker</a>
-        <button class="lang-toggle" type="button" onclick="toggleLang()">EN</button>
+        <button class="lang-toggle" type="button" aria-label="Switch to English" onclick="toggleLang()">EN</button>
       </div>
     </div>
   </nav>
@@ -32,23 +33,25 @@
   <main>
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-text">
-        <div class="eyebrow"><span class="status-dot"></span><span data-i18n="hero_eyebrow">为研究者打造的轻量工具</span></div>
+        <div class="eyebrow"><a href="#updates">v1.5.0</a><span data-i18n="hero_eyebrow">中英文界面 · 两种外观主题</span></div>
         <div class="hero-brand">
-          <img src="logo.svg" alt="" width="44" height="44">
           <h1 id="hero-title">Citation Tracker</h1>
         </div>
-        <p class="hero-tagline" data-i18n="hero_title">追踪引用，发现影响力</p>
-        <p data-i18n="hero_desc">自动追踪 Google Scholar 引用变化，可视化年度趋势与影响力，并准确找出新增引用的论文。</p>
+        <p class="hero-tagline" data-i18n="hero_title">追踪被引变化，了解学术影响</p>
+        <p data-i18n="hero_desc">自动追踪 Google Scholar 论文的被引次数，查看年度趋势，以及每次更新中哪些论文的被引次数增加。</p>
         <div class="hero-buttons">
           <a href="https://chromewebstore.google.com/detail/citation-tracker/fklkbgfognmpjiaflembdklibehgifkm" target="_blank" rel="noopener" class="button"><span data-i18n="hero_btn">安装 Chrome 扩展</span><span aria-hidden="true">↗</span></a>
-          <a href="https://github.com/jaychempan/citation-tracker" target="_blank" rel="noopener" class="button secondary"><span data-i18n="hero_github">查看源代码</span></a>
+          <a href="downloads/citation-tracker-1.5.0.zip" class="button secondary" download><span data-i18n="hero_download">下载 v1.5.0</span></a>
         </div>
         <p class="hero-note"><span data-i18n="hero_note">免费、开源 · 数据仅保存在你的浏览器中</span></p>
       </div>
       <div class="preview-wrap">
-        <div class="preview-glow"></div>
-        <img src="preview_v1.4@2x.png" alt="Citation Tracker annual citations and impact radar" class="preview" width="840" height="1053">
-        <div class="floating-stat" aria-hidden="true"><span>+12</span><small data-i18n="preview_badge">新增引用</small></div>
+        <div class="theme-picker" role="group" aria-label="比较外观主题" data-i18n-aria-label="theme_picker_label">
+          <button type="button" data-preview-theme="forest" aria-pressed="true" data-i18n="theme_forest">松绿</button>
+          <button type="button" data-preview-theme="graphite" aria-pressed="false" data-i18n="theme_graphite">石墨</button>
+        </div>
+        <img id="productPreview" src="screenshots/forest-zh@2x.png" alt="松绿主题的 Citation Tracker 中文界面" class="preview" width="840" height="1200" fetchpriority="high">
+        <p class="preview-caption" data-i18n="preview_caption">真实界面 · 示例数据</p>
       </div>
     </section>
 
@@ -60,52 +63,54 @@
 
     <section id="features" class="features">
       <div class="feature">
-        <span class="feature-icon">01</span>
         <h3 data-i18n="feat1_title">自动刷新</h3>
-        <p data-i18n="feat1_desc">每 30 分钟自动更新引用数据，无需手动查看。</p>
+        <p data-i18n="feat1_desc">每 30 分钟自动更新被引数据，无需手动查看。</p>
       </div>
       <div class="feature">
-        <span class="feature-icon">05</span>
-        <h3 data-i18n="feat5_title">年度引用趋势</h3>
-        <p data-i18n="feat5_desc">自动读取 Scholar 年度数据，用清晰柱状图呈现长期增长和同比变化。</p>
+        <h3 data-i18n="feat5_title">年度被引趋势</h3>
+        <p data-i18n="feat5_desc">展示 Scholar 公开的历年被引次数；当前年份单独标注，同比只比较连续的完整年度。</p>
       </div>
       <div class="feature">
-        <span class="feature-icon">06</span>
-        <h3 data-i18n="feat6_title">影响力雷达</h3>
-        <p data-i18n="feat6_desc">综合引用、指数、论文覆盖与增长动量，快速理解研究影响力结构。</p>
+        <h3 data-i18n="feat6_title">影响力雷达图</h3>
+        <p data-i18n="feat6_desc">查看被引次数、h-index、i10-index、被引论文占比和增长势头，并展开指标说明。</p>
       </div>
       <div class="feature">
-        <span class="feature-icon">02</span>
-        <h3 data-i18n="feat2_title">论文级增量</h3>
-        <p data-i18n="feat2_desc">准确识别哪篇论文新增了引用，以及本次增加数量。</p>
+        <h3 data-i18n="feat2_title">论文被引变化</h3>
+        <p data-i18n="feat2_desc">查看哪些论文的被引次数增加，以及每篇论文增加了多少次。</p>
       </div>
       <div class="feature">
-        <span class="feature-icon">03</span>
-        <h3 data-i18n="feat3_title">多账号追踪</h3>
-        <p data-i18n="feat3_desc">同时追踪自己和他人主页，一个弹窗全掌握。</p>
+        <h3 data-i18n="feat3_title">多学者追踪</h3>
+        <p data-i18n="feat3_desc">同时追踪自己和关注的研究者，在一个弹窗中查看数据。</p>
       </div>
       <div class="feature">
-        <span class="feature-icon">04</span>
         <h3 data-i18n="feat4_title">论文列表</h3>
-        <p data-i18n="feat4_desc">浏览论文与引用数，筛选本地快照，并可一键打开 Scholar 在线检索。</p>
+        <p data-i18n="feat4_desc">浏览已保存的论文和被引次数，按学者或关键词筛选，也可打开 Scholar 在线搜索。</p>
+      </div>
+      <div class="feature">
+        <h3 data-i18n="feat7_title">中英文界面</h3>
+        <p data-i18n="feat7_desc">界面跟随浏览器语言，也可手动切换。论文标题、作者和通用指标保留原文。</p>
+      </div>
+      <div class="feature">
+        <h3 data-i18n="feat8_title">松绿与石墨</h3>
+        <p data-i18n="feat8_desc">在弹窗底部切换主题，跟随系统深浅色。语言和主题选择都会自动保存。</p>
       </div>
     </section>
 
     <section class="workflow" aria-labelledby="workflow-title">
       <div class="section-heading">
         <span data-i18n="workflow_kicker">保持专注</span>
-        <h2 id="workflow-title" data-i18n="workflow_title">引用变化，一眼看清</h2>
-        <p data-i18n="workflow_desc">不再反复打开 Scholar，也不用自己记录数字。Citation Tracker 把变化整理成清晰的时间线。</p>
+        <h2 id="workflow-title" data-i18n="workflow_title">被引变化，一眼看清</h2>
+        <p data-i18n="workflow_desc">不必反复打开 Scholar，也不用自己记录数字。Citation Tracker 会整理每次更新中的被引增长记录。</p>
       </div>
       <div class="workflow-grid">
         <article class="workflow-copy">
           <div class="workflow-item active"><span>01</span><div><h3 data-i18n="flow1_title">添加 Scholar 主页</h3><p data-i18n="flow1_desc">输入用户 ID，同时追踪自己与关注的研究者。</p></div></div>
-          <div class="workflow-item"><span>02</span><div><h3 data-i18n="flow2_title">自动建立论文基线</h3><p data-i18n="flow2_desc">首次同步保存论文快照，后续刷新精准比较变化。</p></div></div>
-          <div class="workflow-item"><span>03</span><div><h3 data-i18n="flow3_title">查看新增引用</h3><p data-i18n="flow3_desc">新增数量、对应论文和发生时间，都在活动列表中。</p></div></div>
+          <div class="workflow-item"><span>02</span><div><h3 data-i18n="flow2_title">建立论文初始记录</h3><p data-i18n="flow2_desc">首次同步保存论文与被引次数，供后续刷新比较。</p></div></div>
+          <div class="workflow-item"><span>03</span><div><h3 data-i18n="flow3_title">查看被引增长</h3><p data-i18n="flow3_desc">增加了多少次、对应哪篇论文、何时发现，都在动态列表中。</p></div></div>
         </article>
         <div class="activity-demo" aria-label="Citation activity example">
-          <div class="demo-header"><span data-i18n="demo_title">最新活动</span><span class="live-pill"><i></i> LIVE</span></div>
-          <div class="demo-total"><span data-i18n="demo_period">最近 30 天</span><strong>+28</strong><small data-i18n="demo_citations">次新增引用</small></div>
+          <div class="demo-header"><span data-i18n="demo_title">被引动态</span><span class="sample-label" data-i18n="demo_sample">示例数据</span></div>
+          <div class="demo-total"><span data-i18n="demo_period">最近 30 天</span><strong>+28</strong><small data-i18n="demo_citations">次新增被引</small></div>
           <div class="demo-row"><div><b>Deep residual learning for image recognition</b><small>CVPR · 2016</small></div><strong>+12</strong></div>
           <div class="demo-row"><div><b>Delving deep into rectifiers</b><small>ICCV · 2015</small></div><strong>+9</strong></div>
           <div class="demo-row"><div><b>Mask R-CNN</b><small>ICCV · 2017</small></div><strong>+7</strong></div>
@@ -115,7 +120,7 @@
 
     <section class="privacy-callout" aria-labelledby="privacy-callout-title">
       <div class="privacy-mark" aria-hidden="true">✓</div>
-      <div><span data-i18n="privacy_kicker">Privacy by design</span><h2 id="privacy-callout-title" data-i18n="privacy_callout_title">你的学术数据，只属于你</h2><p data-i18n="privacy_callout_desc">无需账号、没有分析脚本、没有云端数据库。主页 ID、论文快照与引用历史全部保存在 Chrome 本地存储中。</p></div>
+      <div><span data-i18n="privacy_kicker">隐私优先</span><h2 id="privacy-callout-title" data-i18n="privacy_callout_title">你的学术数据，只属于你</h2><p data-i18n="privacy_callout_desc">无需账号、没有分析脚本、没有云端数据库。主页 ID、论文快照与引用历史全部保存在 Chrome 本地存储中。</p></div>
       <a href="privacy.html" class="text-link" data-i18n="privacy_link">阅读隐私政策 <span aria-hidden="true">→</span></a>
     </section>
 
@@ -123,30 +128,50 @@
       <div class="section-heading">
         <span data-i18n="install_kicker">三步开始</span>
         <h2 data-i18n="install_title">安装</h2>
-        <p data-i18n="install_desc">不到一分钟，让引用变化自动来找你。</p>
+        <p data-i18n="install_desc">添加 Scholar 主页后，即可开始自动追踪被引变化。</p>
       </div>
       <div class="install-card">
         <ol>
           <li data-i18n="install_step1">从 <a href="https://chromewebstore.google.com/detail/citation-tracker/fklkbgfognmpjiaflembdklibehgifkm" target="_blank" rel="noopener">Chrome 应用商店</a>安装扩展</li>
           <li data-i18n="install_step2">点击工具栏图标，输入你的 Google Scholar 用户 ID</li>
-          <li data-i18n="install_step3">首次刷新建立论文基线，之后自动记录新增引用</li>
+          <li data-i18n="install_step3">首次刷新保存论文初始记录，之后自动记录被引增长</li>
         </ol>
         <div class="id-hint">
           <p data-i18n="hint_label">从 Scholar 主页 URL 中获取你的 ID：</p>
           <code>scholar.google.com/citations?user=<strong>DhtAFkwAAAAJ</strong>&hl=en</code>
         </div>
       </div>
+      <p class="package-note" data-i18n="install_package_note">v1.5.0 安装包可用于开发者模式安装。Chrome 应用商店当前为 v1.4.0，新版需另行提交商店审核。</p>
     </section>
 
     <section id="dev" class="dev">
       <h2 data-i18n="dev_title">开发者模式安装</h2>
       <ol>
-        <li data-i18n="dev_step1">克隆或下载本项目到本地</li>
+        <li data-i18n="dev_step1">下载 <a href="downloads/citation-tracker-1.5.0.zip" download>v1.5.0 安装包</a>并解压</li>
         <li data-i18n="dev_step2">打开 Chrome，地址栏输入 <code>chrome://extensions</code></li>
         <li data-i18n="dev_step3">开启右上角「开发者模式」开关</li>
-        <li data-i18n="dev_step4">点击「加载已解压的扩展程序」，选择项目的 <code>chrome</code> 目录</li>
+        <li data-i18n="dev_step4">点击「加载已解压的扩展程序」，选择解压后包含 <code>manifest.json</code> 的目录</li>
         <li data-i18n="dev_step5">安装完成，工具栏出现 Citation Tracker 图标</li>
       </ol>
+      <p class="package-note" data-i18n="dev_update">已有开发者模式安装：替换扩展目录中的文件，然后在 chrome://extensions 点击重新加载。学者数据和偏好会保留。</p>
+    </section>
+
+    <section id="updates" class="updates" aria-labelledby="updates-title">
+      <div class="section-heading"><h2 id="updates-title" data-i18n="updates_title">更新日志</h2></div>
+      <article class="release-entry">
+        <div class="release-heading"><h3>v1.5.0</h3><time datetime="2026-10-01">2026-10-01</time></div>
+        <ul>
+          <li data-i18n="release150_1">新增中英文界面，保留产品名称、论文原文与通用指标。</li>
+          <li data-i18n="release150_2">新增松绿、石墨两种主题，支持系统深浅色并保存偏好。</li>
+          <li data-i18n="release150_3">采用本地 Roboto 与 Noto Sans SC 字体，统一按钮、图标和数据排版。</li>
+          <li data-i18n="release150_4">年度同比只比较连续的完整年度，并完善雷达图指标说明与缓存年份处理。</li>
+        </ul>
+        <a href="downloads/citation-tracker-1.5.0.zip" class="text-link" download data-i18n="hero_download">下载 v1.5.0</a>
+      </article>
+      <article class="release-entry">
+        <div class="release-heading"><h3>v1.4.0</h3><time datetime="2026-08-24">2026-08-24</time></div>
+        <p data-i18n="release140">新增年度被引趋势与影响力雷达图。</p>
+      </article>
     </section>
 
     <section class="faq" aria-labelledby="faq-title">
@@ -155,16 +180,17 @@
         <h2 id="faq-title" data-i18n="faq_title">常见问题</h2>
       </div>
       <div class="faq-list">
-        <details><summary data-i18n="faq1_q">它会读取我的 Google 账号吗？</summary><p data-i18n="faq1_a">不会。扩展仅请求公开的 Google Scholar 引用数据，不读取账号信息、邮件或浏览历史。</p></details>
-        <details><summary data-i18n="faq2_q">为什么第一次刷新没有显示新增引用？</summary><p data-i18n="faq2_a">第一次刷新用于建立论文基线。从第二次成功刷新开始，扩展才会比较并记录新增引用。</p></details>
-        <details><summary data-i18n="faq3_q">可以追踪多位研究者吗？</summary><p data-i18n="faq3_a">可以。你可以添加多个 Scholar 用户 ID，并按主页筛选论文与引用活动。</p></details>
+        <details><summary data-i18n="faq1_q">它会读取我的 Google 账号吗？</summary><p data-i18n="faq1_a">不会。扩展仅请求公开的 Google Scholar 被引数据，不读取账号信息、邮件或浏览历史。</p></details>
+        <details><summary data-i18n="faq2_q">为什么第一次刷新没有显示被引增长？</summary><p data-i18n="faq2_a">第一次刷新用于保存论文初始记录。从第二次成功刷新开始，扩展才会比较并记录被引增长。</p></details>
+        <details><summary data-i18n="faq3_q">可以追踪多位研究者吗？</summary><p data-i18n="faq3_a">可以。你可以添加多个 Scholar 用户 ID，并按学者筛选论文与被引动态。</p></details>
         <details><summary data-i18n="faq4_q">数据可以导出吗？</summary><p data-i18n="faq4_a">当前版本专注于本地追踪和浏览，暂未提供导出功能。你可以在 GitHub 提交功能建议。</p></details>
+        <details><summary data-i18n="faq5_q">如何切换语言和主题？</summary><p data-i18n="faq5_a">点击弹窗顶部的「中文 / EN」切换语言，在底部的主题菜单选择「松绿」或「石墨」。选择会自动保存。</p></details>
       </div>
     </section>
 
     <section class="final-cta">
       <img src="logo.svg" alt="" width="52" height="52">
-      <h2 data-i18n="cta_title">让每一次引用增长，都被看见</h2>
+      <h2 data-i18n="cta_title">让每一次被引增长，都被看见</h2>
       <p data-i18n="cta_desc">安装 Citation Tracker，把重复检查交给浏览器。</p>
       <a href="https://chromewebstore.google.com/detail/citation-tracker/fklkbgfognmpjiaflembdklibehgifkm" target="_blank" rel="noopener" class="button"><span data-i18n="hero_btn">安装 Chrome 扩展</span><span aria-hidden="true">↗</span></a>
     </section>
@@ -180,6 +206,7 @@
     </div>
   </footer>
 
-  <script src="i18n.js?v=1.4.0"></script>
+  <script src="i18n.js?v=1.5.0"></script>
+  <script src="script.js?v=1.5.0"></script>
 </body>
 </html>

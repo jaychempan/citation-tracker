@@ -1,82 +1,83 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="forest">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Google Scholar Citations</title>
+    <title data-i18n="pageTitle">Google Scholar Citations</title>
     <link rel="stylesheet" href="popup.css">
   </head>
   <body>
     <header class="app-header">
       <img class="logo" src="icons/logo.svg" alt="">
       <div class="title-block">
-        <h1>Citation Tracker</h1>
-        <p class="title-desc">Track citations. Discover impact.</p>
+        <h1 data-i18n="appName">Citation Tracker</h1>
+        <p class="title-desc" data-i18n="tagline">Track citations. Discover impact.</p>
       </div>
       <div class="header-actions">
-        <button id="refreshButton" class="icon-button" type="button" aria-label="Refresh citations" title="Refresh">↻</button>
-        <button id="toggleInputButton" class="icon-button primary-icon" type="button" aria-expanded="false" aria-controls="inputPanel" aria-label="Edit Scholar IDs" title="Edit IDs">+</button>
+        <button id="languageButton" class="icon-button language-button" type="button" data-i18n-title="switchLanguage" data-i18n-aria-label="switchLanguage" title="Switch to Chinese" aria-label="Switch to Chinese">中文</button>
+        <button id="refreshButton" class="icon-button" type="button" aria-label="Refresh citations" data-i18n-aria-label="refreshLabel" title="Refresh" data-i18n-title="refresh"><span class="refresh-glyph"><svg class="ui-icon" aria-hidden="true"><use href="icons/interface.svg#refresh"></use></svg></span></button>
+        <button id="toggleInputButton" class="icon-button primary-icon" type="button" aria-expanded="false" aria-controls="inputPanel" aria-label="Edit Scholar IDs" data-i18n-aria-label="editIdsLabel" title="Edit IDs" data-i18n-title="editIds"><svg class="ui-icon input-open-icon" aria-hidden="true"><use href="icons/interface.svg#add"></use></svg><svg class="ui-icon input-close-icon" aria-hidden="true"><use href="icons/interface.svg#close"></use></svg></button>
       </div>
     </header>
 
     <main>
-      <section id="inputPanel" class="input-panel" aria-label="Google Scholar IDs" hidden>
-        <label for="ownScholarId">My Scholar ID</label>
-        <input id="ownScholarId" type="text" spellcheck="false" autocomplete="off" placeholder="Your Scholar user ID">
-        <p class="field-hint">From URL: scholar.google.com/citations?user=<strong>DhtAFkwAAAAJ</strong>&hl=en</p>
+      <section id="inputPanel" class="input-panel" aria-label="Google Scholar IDs" data-i18n-aria-label="idsLabel" hidden>
+        <label for="ownScholarId" data-i18n="ownId">My Scholar ID</label>
+        <input id="ownScholarId" type="text" spellcheck="false" autocomplete="off" placeholder="Your Scholar user ID" data-i18n-placeholder="ownIdPlaceholder">
+        <p class="field-hint"><span data-i18n="fromUrl">From URL:</span> scholar.google.com/citations?user=<strong>DhtAFkwAAAAJ</strong>&hl=en</p>
 
-        <label for="scholarIds">Other Scholar IDs</label>
-        <textarea id="scholarIds" rows="2" spellcheck="false" aria-label="Other Scholar user IDs" placeholder="Add others, separated by new lines or commas"></textarea>
+        <label for="scholarIds" data-i18n="otherIds">Other Scholar IDs</label>
+        <textarea id="scholarIds" rows="2" spellcheck="false" aria-label="Other Scholar user IDs" data-i18n-aria-label="otherIdsLabel" placeholder="Add others, separated by new lines or commas" data-i18n-placeholder="otherIdsPlaceholder"></textarea>
 
         <div class="actions">
-          <button id="saveButton" type="button">Save</button>
-          <button id="cancelInputButton" class="secondary" type="button">Cancel</button>
+          <button id="saveButton" type="button" data-i18n="save">Save</button>
+          <button id="cancelInputButton" class="secondary" type="button" data-i18n="cancel">Cancel</button>
         </div>
       </section>
 
-      <section class="metrics" aria-label="Citation update summary">
+      <section class="metrics" aria-label="Citation update summary" data-i18n-aria-label="metricsLabel">
         <div>
-          <span class="metric-label">My citations</span>
+          <span class="metric-label" data-i18n="myCitations">My citations</span>
           <strong id="totalMetric" class="metric-composite"><span id="totalValue">--</span><span id="totalDelta" class="metric-delta"></span></strong>
         </div>
         <div>
-          <span class="metric-label">All profiles</span>
+          <span class="metric-label" data-i18n="allProfilesDelta" title="Change in total citations across all added profiles since the previous successful refresh." data-i18n-title="allProfilesDeltaHint">This refresh</span>
           <strong id="deltaMetric">--</strong>
         </div>
       </section>
 
-      <section class="monitor-summary" aria-label="Article monitoring summary">
+      <section class="monitor-summary" aria-label="Article monitoring summary" data-i18n-aria-label="monitorLabel">
         <div>
           <strong id="monitoredArticles">--</strong>
-          <span>papers watched</span>
+          <span data-i18n="watchedLabel">papers watched</span>
         </div>
         <div>
           <strong id="changedArticles">--</strong>
-          <span>papers increased</span>
+          <span data-i18n="increasedLabel">papers increased</span>
         </div>
         <div>
           <strong id="articleCitationGain">--</strong>
-          <span>citations gained</span>
+          <span data-i18n="gainedLabel">citations gained</span>
         </div>
       </section>
 
-      <div class="view-tabs" role="tablist" aria-label="Citation tracker views">
-        <button id="profilesTab" class="view-tab active" type="button" role="tab" aria-selected="true" aria-controls="profilesView">Profiles</button>
-        <button id="insightsTab" class="view-tab" type="button" role="tab" aria-selected="false" aria-controls="insightsView">Insights</button>
-        <button id="papersTab" class="view-tab" type="button" role="tab" aria-selected="false" aria-controls="papersView">Papers</button>
-        <button id="activityTab" class="view-tab" type="button" role="tab" aria-selected="false" aria-controls="activityView">Activity</button>
+      <div class="view-tabs" role="tablist" aria-label="Citation tracker views" data-i18n-aria-label="viewsLabel">
+        <button id="profilesTab" class="view-tab active" type="button" role="tab" aria-selected="true" aria-controls="profilesView"><svg class="ui-icon tab-icon" aria-hidden="true"><use href="icons/interface.svg#profiles"></use></svg><span data-i18n="profiles">Profiles</span></button>
+        <button id="insightsTab" class="view-tab" type="button" role="tab" aria-selected="false" aria-controls="insightsView"><svg class="ui-icon tab-icon" aria-hidden="true"><use href="icons/interface.svg#insights"></use></svg><span data-i18n="insights">Insights</span></button>
+        <button id="papersTab" class="view-tab" type="button" role="tab" aria-selected="false" aria-controls="papersView"><svg class="ui-icon tab-icon" aria-hidden="true"><use href="icons/interface.svg#papers"></use></svg><span data-i18n="papers">Papers</span></button>
+        <button id="activityTab" class="view-tab" type="button" role="tab" aria-selected="false" aria-controls="activityView"><svg class="ui-icon tab-icon" aria-hidden="true"><use href="icons/interface.svg#activity"></use></svg><span data-i18n="activity">Activity</span></button>
       </div>
 
       <section id="activityView" class="view-panel" role="tabpanel" aria-labelledby="activityTab" hidden>
         <div class="section-heading">
           <div>
-            <h2>Citation activity</h2>
-            <p id="activityCaption">Checking article-level changes...</p>
+            <h2 data-i18n="activityHeading">Citation activity</h2>
+            <p id="activityCaption" data-i18n="checkingArticles">Checking article-level changes...</p>
           </div>
           <label class="filter-label" for="profileFilter">
-            <span>Profile</span>
-            <select id="profileFilter" aria-label="Filter citation activity by profile">
-              <option value="all">All profiles</option>
+            <span data-i18n="profile">Profile</span>
+            <select id="profileFilter" aria-label="Filter citation activity by profile" data-i18n-aria-label="activityFilterLabel">
+              <option value="all" data-i18n="allProfiles">All profiles</option>
             </select>
           </label>
         </div>
@@ -88,8 +89,8 @@
 
       <section id="insightsView" class="view-panel" role="tabpanel" aria-labelledby="insightsTab" hidden>
         <div class="section-heading insights-heading">
-          <div><h2>Impact insights</h2><p>Annual citations and research profile signals</p></div>
-          <label class="filter-label" for="insightsProfileFilter"><span>Profile</span><select id="insightsProfileFilter" aria-label="Select impact profile"></select></label>
+          <div><h2 data-i18n="insightsHeading">Impact insights</h2><p data-i18n="insightsDescription">Annual citations and research profile signals</p></div>
+          <label class="filter-label" for="insightsProfileFilter"><span data-i18n="profile">Profile</span><select id="insightsProfileFilter" aria-label="Select impact profile" data-i18n-aria-label="insightsFilterLabel"></select></label>
         </div>
         <div id="insights" class="insights" aria-live="polite"></div>
       </section>
@@ -97,34 +98,34 @@
       <section id="papersView" class="view-panel" role="tabpanel" aria-labelledby="papersTab" hidden>
         <div class="section-heading paper-heading">
           <div>
-            <h2>Scholar papers</h2>
-            <p id="papersCaption">Loading saved paper citations...</p>
+            <h2 data-i18n="papersHeading">Scholar papers</h2>
+            <p id="papersCaption" data-i18n="loadingPapers">Loading saved paper citations...</p>
           </div>
         </div>
 
-        <div class="paper-controls" aria-label="Paper list controls">
+        <div class="paper-controls" aria-label="Paper list controls" data-i18n-aria-label="paperControlsLabel">
           <label class="paper-search" for="paperSearch">
-            <span>Filter saved papers</span>
-            <input id="paperSearch" type="search" autocomplete="off" placeholder="Filter saved papers">
+            <span data-i18n="filterPapers">Filter saved papers</span>
+            <input id="paperSearch" type="search" autocomplete="off" placeholder="Filter saved papers" data-i18n-placeholder="filterPapers">
           </label>
           <div class="paper-search-meta">
-            <span>Filters papers already saved from tracked profiles</span>
-            <a id="scholarSearchLink" target="_blank" rel="noopener noreferrer" hidden>Search Scholar online</a>
+            <span data-i18n="filterPapersHint">Filters papers already saved from tracked profiles</span>
+            <a id="scholarSearchLink" target="_blank" rel="noopener noreferrer" hidden data-i18n="scholarSearch">Search Scholar online</a>
           </div>
           <div class="paper-selects">
             <label for="paperProfileFilter">
-              <span>Profile</span>
+              <span data-i18n="profile">Profile</span>
               <select id="paperProfileFilter">
-                <option value="all">All profiles</option>
+                <option value="all" data-i18n="allProfiles">All profiles</option>
               </select>
             </label>
             <label for="paperSort">
-              <span>Sort</span>
+              <span data-i18n="sort">Sort</span>
               <select id="paperSort">
-                <option value="citations">Most cited</option>
-                <option value="year">Newest year</option>
-                <option value="change">Latest gain</option>
-                <option value="title">Title A-Z</option>
+                <option value="citations" data-i18n="sortCitations">Most cited</option>
+                <option value="year" data-i18n="sortYear">Newest year</option>
+                <option value="change" data-i18n="sortChange">Latest gain</option>
+                <option value="title" data-i18n="sortTitle">Title A-Z</option>
               </select>
             </label>
           </div>
@@ -140,8 +141,8 @@
       <section id="profilesView" class="view-panel" role="tabpanel" aria-labelledby="profilesTab">
         <div class="section-heading profile-heading">
           <div>
-            <h2>Tracked profiles</h2>
-            <p>Profile metrics and article coverage</p>
+            <h2 data-i18n="profilesHeading">Tracked profiles</h2>
+            <p data-i18n="profilesDescription">Profile metrics and article coverage</p>
           </div>
         </div>
         <div id="profiles" class="profiles"></div>
@@ -150,13 +151,15 @@
 
     <footer class="app-footer">
       <div class="footer-links">
-        <a href="https://jaychempan.github.io/citation-tracker" target="_blank" rel="noopener" title="Homepage">⌂</a>
-        <a href="https://github.com/jaychempan/citation-tracker" target="_blank" rel="noopener" title="GitHub">⌘</a>
+        <a href="https://jaychempan.github.io/citation-tracker" target="_blank" rel="noopener" title="Homepage" aria-label="Homepage" data-i18n-title="homepage" data-i18n-aria-label="homepage"><svg class="ui-icon" aria-hidden="true"><use href="icons/interface.svg#home"></use></svg></a>
+        <a href="https://github.com/jaychempan/citation-tracker" target="_blank" rel="noopener" title="GitHub" aria-label="GitHub"><svg class="ui-icon" aria-hidden="true"><use href="icons/interface.svg#repository"></use></svg></a>
       </div>
-      <p id="summary" class="footer-time">Loading...</p>
+      <label class="theme-control" for="themeSelect"><span data-i18n="theme">Theme</span><select id="themeSelect" aria-label="Choose a theme" data-i18n-aria-label="themeLabel"><option value="forest" data-i18n="themeForest">Forest</option><option value="graphite" data-i18n="themeGraphite">Graphite</option></select></label>
+      <p id="summary" class="footer-time" data-i18n="loading">Loading...</p>
       <p id="status" role="status"></p>
     </footer>
 
+    <script src="i18n.js"></script>
     <script src="paper-utils.js"></script>
     <script src="popup.js"></script>
   </body>

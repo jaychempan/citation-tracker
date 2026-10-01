@@ -1,0 +1,24 @@
+{
+  "provider": "Google Fonts",
+  "downloaded": "2026-10-01",
+  "fonts": [
+    {
+      "family": "Roboto",
+      "file": "roboto-latin.woff2",
+      "license": "Roboto-OFL.txt",
+      "weights": "400–700",
+      "sourceUrl": "https://fonts.gstatic.com/l/font?kit=KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMW36eA1EfUf3ZescuDW22jij2v3YN80IY_EtG3_T0cMbdexkBC_e56ahd00LFSDbU6TZZqU5VTyqkz86-5ogPfK1oMXqDXcyWqi_cyvSjuYR_C4WPqHYWuyePYF3DTySX6UY8qQ-39ZYx-VBaNEJs2frnkgCDr6aRvZlbskAcABVHR8fD33w5-QwZp9LmR2vyfYQXVGv6oWtn98jCwUVLmEzFRAZvSqluRcaGOHJjMycZHHUYoCH0K4mhhRG7aRJ0pYQvUMlF0yKMlQrx2jhrVyk-&skey=a0a0114a1dcab3ac&v=v51",
+      "sha256": "3dfa7a99e08d1d1ac99a3b971e0203eaf22f8c43d6a605485038f24372ec6f99",
+      "bytes": 26104
+    },
+    {
+      "family": "Noto Sans SC",
+      "file": "noto-sans-sc-ui.woff2",
+      "license": "NotoSansSC-OFL.txt",
+      "weights": "400–700",
+      "sourceUrl": "https://fonts.gstatic.com/l/font?kit=k3kXo84MPvpLmixcA63oeALhLIiP-Q_MAKp5m5VlPQuD0HQ3RPetSL6Il8AO7E-1mOLxAtLUb_v2twNt4TKkY9m1Oqj7YibNDtc4VKNik6LmXXibJ2J9ZAry5FSl34ohBympgK9gXm2_hsUpuYwScNTdpWmUmQxmi5ZuXcwvQy-lcF3V4B97Jp_chCEGvwbfPzd-vzrOW0nKCv7s7xqhADCSufFT9JAqtZIN_16Mrf_olIIpAVKfUTlfyacvq8qvQa7rp1BmZLO3bcOe6B70xkzrghKCmrPW_IEMKN2o4RxYkYirH6_cmEwEHybMfxZYU_pJl6WlVzgAvbZ80q0P9nPIxU6Jd5l171lW-zjZPvLKxCJ6FLS1-tcsftysx8f8U1S1kC2eGj-aeg9J4HQcCLd60s6JYxe3gz3pfk5h3AqQC8lL626nCcKLZeTiujFZFTiJ2e4JZgM_UWX37rc1O5Gkoe6RDLbWhY_Drd0f2v3UTP09URLndExWBG0Pk9YhWGw1hZ8ywEWn1KYv072-G9S0h6ZR8UHDTKtvFH7BO0hxkZYzBXisCg3DjjI-qVorkKmP0xLpQo38xANf0TsP1bj6qdtmFGYQUuwD6FESo8Jmv773tpWcDTtJOJGfRrrBjAxWI8yyFXnhxuCMF_MGi8OEqHOC4UhwPZGN8PFOF7OZ0OlqUydcD7ax5R_5RhZDWQPByN6EVP6V2ZQvIexTcfdT6r6YjqlAlpF-yteHOAV1RZXlkLdD2yoKVoRU71A06iRbH7A5hQ_Q3vIyZbIkz0QBu1_thDiFXkRoJH7VzyCu2_C0qvxVQTlbgL_QKpatZKNHFtTguVg36KHfHDioExc25_HFwtDCn4Vdg_WNg5WgJySKlHVgFKkoO1IDF6pjLolBgP51RYo2fhzipfiUNXHdcyGOnXNb4m-3OH7I2FEUONqnBxQE_ac2ea1qrnXvCv2n8NC_mssS8qGKZ6bw7G-_LFogBB3Iczr3TdraHXD5dXOnmxbD5Mz9bNA7YA3505QAA5GnGDLeTnBFrmkTsfEzEuSdb3NvTtiHLh0JIX0kelZxnDNhExyp8fFif6m-PUIETQ-_c5n37N9hT4bWTCI1UvrRGUTTt-EBwziFK6esh65wm14dqy0iUSjOL6-7iZcE95NdkICTl9HsWqj6dKgZB732O50asGtxCZIjYlpdOXpjLfYpFWBNOZE&skey=cf0bb10b5602fdc3&v=v40",
+      "sha256": "7e9280701f60d69fc63badd753feb095386ce316594ad3b0164610f080b810c3",
+      "bytes": 83376
+    }
+  ]
+}

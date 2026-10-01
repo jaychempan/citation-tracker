@@ -1,3 +1,6 @@
+const { t, translateError, localizeScholarUrl } = CitationI18n;
+const languageButton = document.getElementById('languageButton');
+const themeSelect = document.getElementById('themeSelect');
 const idsInput = document.getElementById('scholarIds');
 const ownIdInput = document.getElementById('ownScholarId');
 const inputPanel = document.getElementById('inputPanel');
@@ -45,22 +48,57 @@ const viewEntries = [
 ];
 
 let currentState = null;
+let stateLoadError = null;
 let visiblePaperCount = PAPER_PAGE_SIZE;
+let statusMessage = '';
+let statusIsError = false;
+let radarHelpOpen = false;
+let currentTheme = 'forest';
+
+function applyTheme(value) {
+  currentTheme = value === 'graphite' ? 'graphite' : 'forest';
+  document.documentElement.setAttribute('data-theme', currentTheme);
+  themeSelect.value = currentTheme;
+}
+
+function applyLanguage(value) {
+  CitationI18n.setLanguage(value);
+  CitationI18n.applyDocument(document);
+  languageButton.textContent = CitationI18n.getLanguage() === 'en' ? '中文' : 'EN';
+  const previousStatus = statusMessage;
+  const previousError = statusIsError;
+  if (stateLoadError) renderLoadError(stateLoadError);
+  else if (currentState) renderState(currentState, { syncInputs: false });
+  setStatus(previousStatus, previousError);
+}
+
+async function initializePopup() {
+  applyTheme('forest');
+  applyLanguage(CitationI18n.getBrowserLanguage());
+  try {
+    const { uiLanguage, uiTheme } = await chrome.storage.local.get(['uiLanguage', 'uiTheme']);
+    applyTheme(uiTheme);
+    if (uiLanguage) applyLanguage(uiLanguage);
+  } catch (_error) {
+    // A missing preference should not prevent citation data from loading.
+  }
+  await loadState();
+}
 
 function sendMessage(message) {
   return chrome.runtime.sendMessage(message);
 }
 
 function getScholarUrl(id) {
-  return `https://scholar.google.com/citations?user=${encodeURIComponent(id)}&hl=en`;
+  return localizeScholarUrl(`https://scholar.google.com/citations?user=${encodeURIComponent(id)}&hl=en`);
 }
 
 function formatDate(value, includeYear = false) {
   if (!value) {
-    return 'Not updated yet';
+    return t('notUpdated');
   }
 
-  return new Intl.DateTimeFormat('en-US', {
+  return new Intl.DateTimeFormat(CitationI18n.getLocale(), {
     ...(includeYear ? { year: 'numeric' } : {}),
     month: 'short',
     day: 'numeric',
@@ -71,7 +109,7 @@ function formatDate(value, includeYear = false) {
 }
 
 function formatNumber(value) {
-  return new Intl.NumberFormat('en-US').format(value);
+  return new Intl.NumberFormat(CitationI18n.getLocale()).format(value);
 }
 
 function formatDelta(value) {
@@ -85,6 +123,10 @@ function formatDelta(value) {
 function parseMetricNumber(value) {
   const parsed = Number.parseInt(String(value || '').replace(/,/g, ''), 10);
   return Number.isFinite(parsed) ? parsed : null;
+}
+
+function formatStoredMetric(value) {
+  return value === null || value === undefined || value === '' || value === 'N/A' ? t('unavailable') : value;
 }
 
 function getCitationTierClass(value) {
@@ -125,15 +167,17 @@ function setBusy(isBusy) {
 }
 
 function setStatus(message, isError = false) {
-  statusText.textContent = message;
-  statusText.title = message;
+  statusMessage = message;
+  statusIsError = isError;
+  const localized = Object.hasOwn(CitationI18n.messages, message) ? t(message) : translateError(message);
+  statusText.textContent = localized;
+  statusText.title = localized;
   statusText.classList.toggle('error', isError);
 }
 
 function setInputOpen(isOpen) {
   inputPanel.hidden = !isOpen;
   toggleInputButton.setAttribute('aria-expanded', String(isOpen));
-  toggleInputButton.textContent = isOpen ? '×' : '+';
 
   if (isOpen) {
     (ownIdInput.value ? idsInput : ownIdInput).focus();
@@ -157,7 +201,9 @@ function renderMetrics(state) {
   totalDelta.textContent = state.ownCitationDelta === null || state.ownCitationDelta === undefined
     ? ''
     : formatDelta(state.ownCitationDelta);
-  totalMetric.className = getCitationTierClass(ownCitations);
+  totalMetric.className = `metric-composite ${getCitationTierClass(ownCitations)}`;
+  totalDelta.classList.toggle('gain', state.ownCitationDelta > 0);
+  totalDelta.classList.toggle('loss', state.ownCitationDelta < 0);
   deltaMetric.textContent = formatDelta(delta);
   deltaMetric.classList.toggle('gain', delta > 0);
   deltaMetric.classList.toggle('loss', delta < 0);
@@ -182,7 +228,7 @@ function createExternalLink(label, href, className = '') {
   const link = document.createElement('a');
   link.textContent = label;
   link.className = className;
-  link.href = href;
+  link.href = localizeScholarUrl(href);
   link.target = '_blank';
   link.rel = 'noopener noreferrer';
   return link;
@@ -220,14 +266,14 @@ function renderProfileFilter(items = []) {
 
   const all = document.createElement('option');
   all.value = 'all';
-  all.textContent = 'All profiles';
+  all.textContent = t('allProfiles');
   profileFilter.append(all);
 
   items.forEach(item => {
     const option = document.createElement('option');
     option.value = item.id;
     option.textContent = item.id === currentState.ownScholarId
-      ? `${item.name || item.id} (You)`
+      ? t('ownName', { name: item.name || item.id })
       : item.name || item.id;
     profileFilter.append(option);
   });
@@ -243,14 +289,14 @@ function renderPaperProfileFilter(items = []) {
 
   const all = document.createElement('option');
   all.value = 'all';
-  all.textContent = 'All profiles';
+  all.textContent = t('allProfiles');
   paperProfileFilter.append(all);
 
   items.forEach(item => {
     const option = document.createElement('option');
     option.value = item.id;
     option.textContent = item.id === currentState.ownScholarId
-      ? `${item.name || item.id} (You)`
+      ? t('ownName', { name: item.name || item.id })
       : item.name || item.id;
     paperProfileFilter.append(option);
   });
@@ -270,22 +316,22 @@ function getActivityCaption(state, visibleEvents, selectedProfile) {
 
   if (state.lastUpdateError) {
     caption = visibleEvents.length > 0
-      ? 'The last check failed. Showing saved history.'
-      : 'The last check failed. Previous citation totals were preserved.';
+      ? t('checkFailedHistory')
+      : t('checkFailedTotals');
   } else if (!monitor.baselineReady && monitor.trackedArticles > 0) {
-    caption = `Baseline created for ${formatNumber(monitor.trackedArticles)} papers. Changes appear after the next check.`;
+    caption = t('baselineCreated', { count: formatNumber(monitor.trackedArticles) });
   } else if (latest.length > 0) {
-    caption = `${formatNumber(latest.length)} paper${latest.length === 1 ? '' : 's'} gained ${formatNumber(latestGain)} citation${latestGain === 1 ? '' : 's'} on this check.`;
+    caption = t('activityGains', { papers: formatNumber(latest.length), citations: formatNumber(latestGain), paperSuffix: latest.length === 1 ? '' : 's', citationSuffix: latestGain === 1 ? '' : 's' });
   } else if (visibleEvents.length > 0) {
-    caption = 'No new increases on this check. Showing recent history.';
+    caption = t('noNewIncreases');
   } else if (monitor.trackedArticles > 0) {
-    caption = `Watching ${formatNumber(monitor.trackedArticles)} papers every 30 minutes.`;
+    caption = t('watchingPapers', { count: formatNumber(monitor.trackedArticles) });
   } else {
-    caption = 'Add a public Scholar profile to start monitoring papers.';
+    caption = t('startMonitoring');
   }
 
   if (monitor.partialProfiles > 0) {
-    caption += ` Coverage is partial for ${formatNumber(monitor.partialProfiles)} profile${monitor.partialProfiles === 1 ? '' : 's'}.`;
+    caption += t('partialProfiles', { count: formatNumber(monitor.partialProfiles), suffix: monitor.partialProfiles === 1 ? '' : 's' });
   }
 
   return caption;
@@ -302,7 +348,7 @@ function createEventDetails(event, isLatest) {
 
   const profileName = document.createElement('span');
   profileName.className = 'event-profile';
-  profileName.textContent = event.isOwn ? `${event.profileName} (You)` : event.profileName;
+  profileName.textContent = event.isOwn ? t('ownName', { name: event.profileName }) : event.profileName;
 
   const detected = document.createElement('time');
   detected.dateTime = event.detectedAt;
@@ -311,7 +357,7 @@ function createEventDetails(event, isLatest) {
   const delta = document.createElement('strong');
   delta.className = 'event-delta';
   delta.textContent = formatDelta(event.delta);
-  delta.setAttribute('aria-label', `${event.delta} new citations`);
+  delta.setAttribute('aria-label', t('newCitations', { count: formatNumber(event.delta) }));
 
   eventTop.append(profileName, detected, delta);
 
@@ -321,12 +367,12 @@ function createEventDetails(event, isLatest) {
 
   const count = document.createElement('span');
   count.className = 'event-count';
-  count.textContent = `${formatNumber(event.previousCitations)} to ${formatNumber(event.currentCitations)} citations`;
+  count.textContent = t('citationChange', { before: formatNumber(event.previousCitations), current: formatNumber(event.currentCitations) });
 
   if (isLatest) {
     const latestLabel = document.createElement('span');
     latestLabel.className = 'latest-label';
-    latestLabel.textContent = 'Latest check';
+    latestLabel.textContent = t('latestCheck');
     count.append(' ', latestLabel);
   }
 
@@ -337,9 +383,9 @@ function createEventDetails(event, isLatest) {
 
   const metadata = document.createElement('dl');
   [
-    ['Before', formatNumber(event.previousCitations)],
-    ['Current', formatNumber(event.currentCitations)],
-    ['Year', event.year || 'Not listed']
+    [t('before'), formatNumber(event.previousCitations)],
+    [t('current'), formatNumber(event.currentCitations)],
+    [t('year'), event.year || t('notListed')]
   ].forEach(([label, value]) => {
     const group = document.createElement('div');
     const term = document.createElement('dt');
@@ -370,11 +416,11 @@ function createEventDetails(event, isLatest) {
   links.className = 'event-links';
 
   if (event.articleUrl) {
-    links.append(createExternalLink('Article details', event.articleUrl));
+    links.append(createExternalLink(t('articleDetails'), event.articleUrl));
   }
 
   if (event.citationsUrl) {
-    links.append(createExternalLink('Citing works', event.citationsUrl));
+    links.append(createExternalLink(t('citingWorks'), event.citationsUrl));
   }
 
   if (links.childElementCount) {
@@ -400,22 +446,22 @@ function renderActivity(state) {
   if (!visibleEvents.length) {
     const monitor = state.articleMonitorSummary || {};
     const title = state.lastUpdateError
-      ? 'Could not check Google Scholar'
+      ? t('scholarCheckFailed')
       : !monitor.baselineReady && monitor.trackedArticles > 0
-        ? 'Article baseline is ready'
-        : 'No citation increases yet';
+        ? t('baselineReady')
+        : t('noIncreases');
     const description = state.lastUpdateError
-      ? state.lastUpdateError
+      ? translateError(state.lastUpdateError)
       : !monitor.baselineReady && monitor.trackedArticles > 0
-        ? 'The next successful refresh will identify exactly which papers gained citations.'
+        ? t('nextRefresh')
         : selectedProfile === 'all'
-          ? 'Citation increases will appear here with article details and before-and-after counts.'
-          : 'No saved citation increases for this profile.';
+          ? t('activityEmpty')
+          : t('profileActivityEmpty');
     const emptyState = createEmptyState(title, description, Boolean(state.lastUpdateError));
 
     if (state.lastUpdateError && state.ownScholarId) {
       emptyState.append(createExternalLink(
-        'Open Scholar profile',
+        t('openProfile'),
         getScholarUrl(state.ownScholarId),
         'empty-action'
       ));
@@ -448,11 +494,11 @@ function createPaperItem(paper) {
 
   const authors = document.createElement('p');
   authors.className = 'paper-authors';
-  authors.textContent = paper.authors || 'Authors not listed';
+  authors.textContent = paper.authors || t('noAuthors');
 
   const publication = document.createElement('p');
   publication.className = 'paper-publication';
-  publication.textContent = paper.publication || 'Publication not listed';
+  publication.textContent = paper.publication || t('noPublication');
 
   main.append(title, authors, publication);
 
@@ -460,12 +506,12 @@ function createPaperItem(paper) {
     ? createExternalLink('', paper.citationsUrl, 'paper-citations')
     : document.createElement('span');
   citation.className = 'paper-citations';
-  citation.setAttribute('aria-label', `${formatNumber(paper.citations || 0)} citations`);
+  citation.setAttribute('aria-label', t('citationsCount', { count: formatNumber(paper.citations || 0) }));
 
   const citationValue = document.createElement('strong');
   citationValue.textContent = formatNumber(paper.citations || 0);
   const citationLabel = document.createElement('span');
-  citationLabel.textContent = 'citations';
+  citationLabel.textContent = t('citationUnit');
   citation.append(citationValue, citationLabel);
 
   const footer = document.createElement('div');
@@ -474,7 +520,7 @@ function createPaperItem(paper) {
   const profileName = document.createElement('span');
   profileName.className = 'paper-profile';
   profileName.textContent = paper.isOwn
-    ? `${paper.profileName} (You)`
+    ? t('ownName', { name: paper.profileName })
     : paper.profileName;
   footer.append(profileName);
 
@@ -487,7 +533,7 @@ function createPaperItem(paper) {
   if (paper.latestDelta > 0) {
     const gain = document.createElement('strong');
     gain.className = 'paper-gain';
-    gain.textContent = `${formatDelta(paper.latestDelta)} latest`;
+    gain.textContent = t('latestGain', { delta: formatDelta(paper.latestDelta) });
     footer.append(gain);
   }
 
@@ -507,9 +553,9 @@ function renderPapers(state) {
   const remaining = Math.max(0, visiblePapers.length - page.length);
 
   scholarSearchLink.hidden = !query;
-  scholarSearchLink.href = CitationPaperUtils.getScholarSearchUrl(query);
+  scholarSearchLink.href = localizeScholarUrl(CitationPaperUtils.getScholarSearchUrl(query));
   scholarSearchLink.title = query
-    ? `Search Google Scholar for ${query}`
+    ? t('searchQuery', { query })
     : '';
 
   papers.replaceChildren();
@@ -518,28 +564,28 @@ function renderPapers(state) {
   if (!visiblePapers.length) {
     const hasStoredPapers = allPapers.length > 0;
     const title = hasStoredPapers
-      ? 'No saved matches'
+      ? t('noMatches')
       : state.lastUpdateError
-        ? 'Paper sync failed'
-        : 'No saved papers yet';
+        ? t('syncFailed')
+        : t('noPapers');
     const description = hasStoredPapers
-      ? 'This field only filters saved profile papers. Use Search Scholar online for broader results.'
+      ? t('noMatchesHint')
       : state.lastUpdateError
-        ? state.lastUpdateError
-        : 'Sync the tracked profile once to save its public paper list and citation counts.';
+        ? translateError(state.lastUpdateError)
+        : t('syncHint');
     const emptyState = createEmptyState(title, description, Boolean(state.lastUpdateError && !hasStoredPapers));
 
     if (!hasStoredPapers && state.ownScholarId) {
       const actions = document.createElement('div');
       actions.className = 'empty-actions';
       actions.append(createEmptyButton(
-        state.lastUpdateError ? 'Try paper sync again' : 'Sync profile papers',
+        state.lastUpdateError ? t('retrySync') : t('syncPapers'),
         refreshCitations
       ));
 
       if (state.lastUpdateError) {
         actions.append(createExternalLink(
-          'Open Scholar profile',
+          t('openProfile'),
           getScholarUrl(state.ownScholarId),
           'empty-action'
         ));
@@ -550,23 +596,23 @@ function renderPapers(state) {
 
     papers.append(emptyState);
     papersCaption.textContent = hasStoredPapers && query
-      ? `No saved matches for "${query}".`
-      : 'No papers are saved locally. Sync the profile or search Scholar online.';
+      ? t('noQueryMatches', { query })
+      : t('noLocalPapers');
     loadMorePapers.hidden = true;
     return;
   }
 
   page.forEach(paper => papers.append(createPaperItem(paper)));
-  papersCaption.textContent = `Showing ${formatNumber(page.length)} of ${formatNumber(visiblePapers.length)} papers. Checked every 30 minutes.`;
+  papersCaption.textContent = t('showingPapers', { visible: formatNumber(page.length), total: formatNumber(visiblePapers.length) });
 
   if (state.lastUpdateError) {
-    papersCaption.textContent += ' Showing saved data because the latest check failed.';
+    papersCaption.textContent += t('showingSaved');
   } else if ((state.articleMonitorSummary || {}).partialProfiles > 0) {
-    papersCaption.textContent += ' Some profiles have partial coverage.';
+    papersCaption.textContent += t('somePartial');
   }
 
   loadMorePapers.hidden = remaining === 0;
-  loadMorePapers.textContent = `Show ${formatNumber(Math.min(PAPER_PAGE_SIZE, remaining))} more`;
+  loadMorePapers.textContent = t('showMore', { count: formatNumber(Math.min(PAPER_PAGE_SIZE, remaining)) });
 }
 
 function renderProfiles(items = []) {
@@ -574,8 +620,8 @@ function renderProfiles(items = []) {
 
   if (!items.length) {
     profiles.append(createEmptyState(
-      'No profiles yet',
-      'Open settings and enter a public Google Scholar user ID.'
+      t('noProfiles'),
+      t('addProfileHint')
     ));
     return;
   }
@@ -603,14 +649,14 @@ function renderProfiles(items = []) {
     if (item.isOwn) {
       const badge = document.createElement('span');
       badge.className = 'own-badge';
-      badge.textContent = 'You';
+      badge.textContent = t('you');
       tools.append(badge);
     } else {
       const remove = document.createElement('button');
       remove.className = 'remove-button';
       remove.type = 'button';
-      remove.setAttribute('aria-label', `Remove ${item.name || item.id}`);
-      remove.title = 'Remove profile';
+      remove.setAttribute('aria-label', t('removeName', { name: item.name || item.id }));
+      remove.title = t('removeProfile');
       remove.textContent = '×';
       remove.addEventListener('click', () => removeTrackedId(item.id));
       tools.append(remove);
@@ -622,9 +668,9 @@ function renderProfiles(items = []) {
     stats.className = 'profile-stats';
 
     [
-      ['Citations', item.citations || 'N/A'],
-      ['h-index', item.hIndex || 'N/A'],
-      ['i10-index', item.i10Index || 'N/A']
+      [t('citations'), formatStoredMetric(item.citations)],
+      [t('hIndex'), formatStoredMetric(item.hIndex)],
+      [t('i10Index'), formatStoredMetric(item.i10Index)]
     ].forEach(([label, value], index) => {
       const stat = document.createElement('div');
       const statLabel = document.createElement('span');
@@ -641,15 +687,17 @@ function renderProfiles(items = []) {
     const coverage = document.createElement('div');
     coverage.className = 'profile-coverage';
     const watched = Number.isFinite(item.trackedArticles) ? item.trackedArticles : item.articleCount || 0;
-    coverage.textContent = `${formatNumber(watched)} papers watched`;
+    coverage.textContent = t('papersWatched', { count: formatNumber(watched) });
 
     if (item.changedArticles > 0) {
       const gain = document.createElement('strong');
-      gain.textContent = `${formatNumber(item.changedArticles)} increased, ${formatDelta(item.articleCitationGain)}`;
+      gain.textContent = t('profileGains', { count: formatNumber(item.changedArticles), delta: formatDelta(item.articleCitationGain) });
       coverage.append(gain);
     } else {
       const completeness = document.createElement('span');
-      completeness.textContent = item.articlesComplete ? 'Full profile' : 'Partial coverage';
+      completeness.textContent = item.articlesComplete
+        ? t('fullProfile')
+        : watched > 0 ? t('partialCoverage') : t('noPaperCoverage');
       coverage.append(completeness);
     }
 
@@ -658,7 +706,7 @@ function renderProfiles(items = []) {
     if (item.error || item.articleFetchError) {
       const error = document.createElement('p');
       error.className = 'profile-error';
-      error.textContent = item.error || item.articleFetchError;
+      error.textContent = translateError(item.error || item.articleFetchError);
       card.append(error);
     }
 
@@ -666,25 +714,62 @@ function renderProfiles(items = []) {
   });
 }
 
-function createImpactRadar(profile, state) {
+function getAnnualCitationData(profile, state, currentYear = new Date().getFullYear()) {
+  const syncedAt = [profile.citationHistoryUpdatedAt, state.lastUpdated]
+    .find(value => value && Number.isFinite(new Date(value).getTime())) || null;
+  // A year captured before it ended remains partial, even when viewing an old cache later.
+  const incompleteFromYear = Math.min(currentYear, syncedAt ? new Date(syncedAt).getFullYear() : currentYear);
+  const rows = new Map();
+  (Array.isArray(profile.citationHistory) ? profile.citationHistory : []).forEach(item => {
+    if (Number.isInteger(item.year) && item.year > 0 && item.year <= currentYear
+      && Number.isFinite(item.citations) && item.citations >= 0) {
+      rows.set(item.year, { year: item.year, citations: item.citations });
+    }
+  });
+  const history = [...rows.values()].sort((a, b) => a.year - b.year);
+  const completeHistory = history.filter(item => item.year < incompleteFromYear);
+  const latest = completeHistory.at(-1);
+  const previous = latest && completeHistory.find(item => item.year === latest.year - 1);
+  const comparison = previous && previous.citations > 0 ? {
+    year: latest.year,
+    previousYear: previous.year,
+    citations: latest.citations,
+    previousCitations: previous.citations,
+    change: Math.round((latest.citations - previous.citations) / previous.citations * 100)
+  } : null;
+  return { history, comparison, syncedAt, incompleteFromYear, currentYear };
+}
+
+function getRadarSignals(profile, state, annual) {
+  const articles = (state.articleSnapshots || {})[profile.id]?.articles || [];
+  const total = articles.length;
+  const cited = articles.filter(article => article.citations > 0).length;
+  const comparison = annual.comparison;
+  return {
+    reach: total ? cited / total * 100 : null,
+    reachDescription: total
+      ? t('paperReachHint', { total: formatNumber(total), cited: formatNumber(cited) })
+      : t('paperReachUnavailable'),
+    momentum: comparison ? Math.min(100, comparison.citations / comparison.previousCitations * 65) : null,
+    momentumDescription: comparison
+      ? t('momentumHint', { year: comparison.year, previousYear: comparison.previousYear })
+      : t('momentumUnavailable')
+  };
+}
+
+function createImpactRadar(profile, signals) {
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   svg.setAttribute('viewBox', '0 0 280 240');
   svg.setAttribute('role', 'img');
-  svg.setAttribute('aria-label', `Impact radar for ${profile.name || profile.id}`);
+  svg.setAttribute('aria-label', t('radarLabel', { name: profile.name || profile.id }));
   const center = { x: 140, y: 112 };
   const radius = 76;
-  const snapshot = (state.articleSnapshots || {})[profile.id];
-  const articleList = snapshot && Array.isArray(snapshot.articles) ? snapshot.articles : [];
-  const cited = articleList.filter(article => article.citations > 0).length;
-  const history = Array.isArray(profile.citationHistory) ? profile.citationHistory : [];
-  const latest = history.at(-1)?.citations || 0;
-  const previous = history.at(-2)?.citations || latest || 1;
   const metrics = [
-    ['Citations', Math.min(100, Math.log10((profile.citationsNumber || 0) + 1) / 6 * 100)],
-    ['h-index', Math.min(100, (parseMetricNumber(profile.hIndex) || 0) / 100 * 100)],
-    ['i10-index', Math.min(100, (parseMetricNumber(profile.i10Index) || 0) / 150 * 100)],
-    ['Paper reach', articleList.length ? cited / articleList.length * 100 : 0],
-    ['Momentum', Math.min(100, latest / Math.max(previous, 1) * 65)]
+    [t('citations'), Math.min(100, Math.log10((profile.citationsNumber || 0) + 1) / 6 * 100)],
+    [t('hIndex'), Math.min(100, (parseMetricNumber(profile.hIndex) || 0) / 100 * 100)],
+    [t('i10Index'), Math.min(100, (parseMetricNumber(profile.i10Index) || 0) / 150 * 100)],
+    [t('paperReach'), signals.reach, signals.reachDescription],
+    [t('momentum'), signals.momentum, signals.momentumDescription]
   ];
   const point = (index, value = 100) => {
     const angle = -Math.PI / 2 + index * Math.PI * 2 / metrics.length;
@@ -707,13 +792,42 @@ function createImpactRadar(profile, state) {
     const [labelX, labelY] = point(index, 122).split(',');
     label.setAttribute('x', labelX); label.setAttribute('y', labelY);
     label.setAttribute('class', 'radar-label'); label.textContent = metric[0];
+    if (metric[2]) {
+      const description = document.createElementNS(svg.namespaceURI, 'title');
+      description.textContent = metric[2];
+      label.append(description);
+    }
+    if (metric[1] === null) label.setAttribute('class', 'radar-label unavailable');
     svg.append(axis, label);
   });
   const shape = document.createElementNS(svg.namespaceURI, 'polygon');
-  shape.setAttribute('points', metrics.map((metric, index) => point(index, metric[1])).join(' '));
+  shape.setAttribute('points', metrics.map((metric, index) => point(index, metric[1] ?? 0)).join(' '));
   shape.setAttribute('class', 'radar-shape');
   svg.append(shape);
   return svg;
+}
+
+function createRadarHelp(signals) {
+  const details = document.createElement('details'); details.className = 'radar-help';
+  details.open = radarHelpOpen;
+  details.addEventListener('toggle', () => { radarHelpOpen = details.open; });
+  const heading = document.createElement('summary'); heading.textContent = t('radarHelp');
+  const descriptions = document.createElement('dl');
+  [[t('paperReach'), signals.reachDescription], [t('momentum'), signals.momentumDescription]].forEach(([label, description]) => {
+    const term = document.createElement('dt'); term.textContent = label;
+    const body = document.createElement('dd'); body.textContent = description;
+    descriptions.append(term, body);
+  });
+  details.append(heading, descriptions);
+  return details;
+}
+
+function createInsightHeading(title, description) {
+  const group = document.createElement('div');
+  const heading = document.createElement('h3'); heading.textContent = title;
+  const caption = document.createElement('p'); caption.textContent = description;
+  group.append(heading, caption);
+  return group;
 }
 
 function renderInsights(state, orderedProfiles) {
@@ -722,7 +836,7 @@ function renderInsights(state, orderedProfiles) {
   orderedProfiles.forEach(profile => {
     const option = document.createElement('option');
     option.value = profile.id;
-    option.textContent = profile.isOwn ? `${profile.name || profile.id} (You)` : profile.name || profile.id;
+    option.textContent = profile.isOwn ? t('ownName', { name: profile.name || profile.id }) : profile.name || profile.id;
     insightsProfileFilter.append(option);
   });
   if (orderedProfiles.some(profile => profile.id === previousSelection)) {
@@ -731,46 +845,72 @@ function renderInsights(state, orderedProfiles) {
   const profile = orderedProfiles.find(item => item.id === insightsProfileFilter.value) || orderedProfiles[0];
   insights.replaceChildren();
   if (!profile) {
-    insights.append(createEmptyState('No insights yet', 'Add a public Scholar profile to visualize its impact.'));
+    insights.append(createEmptyState(t('noInsights'), t('insightsHint')));
     return;
   }
-  const history = Array.isArray(profile.citationHistory) ? profile.citationHistory : [];
+  const annual = getAnnualCitationData(profile, state);
+  const { history, comparison } = annual;
   const chartCard = document.createElement('article'); chartCard.className = 'insight-card annual-card';
   const header = document.createElement('div'); header.className = 'insight-card-header';
-  header.innerHTML = '<div><h3>Annual citations</h3><p>Public Google Scholar history</p></div>';
-  if (history.length) {
-    const current = history.at(-1).citations;
-    const prior = history.at(-2)?.citations;
+  header.append(createInsightHeading(t('annualCitations'), t('publicHistory')));
+  if (comparison) {
     const delta = document.createElement('strong'); delta.className = 'insight-delta';
-    delta.textContent = Number.isFinite(prior) && prior > 0 ? `${current >= prior ? '+' : ''}${Math.round((current - prior) / prior * 100)}% YoY` : formatNumber(current);
+    delta.textContent = t('yearOverYear', { year: comparison.year, change: `${comparison.change >= 0 ? '+' : ''}${comparison.change}` });
+    delta.title = t('yearOverYearHint', {
+      year: comparison.year, previousYear: comparison.previousYear,
+      before: formatNumber(comparison.previousCitations), current: formatNumber(comparison.citations)
+    });
+    delta.classList.toggle('loss', comparison.change < 0);
     header.append(delta);
   }
   chartCard.append(header);
   if (history.length) {
     const chart = document.createElement('div'); chart.className = 'annual-chart';
     const max = Math.max(...history.map(item => item.citations), 1);
+    const chartNumbers = new Intl.NumberFormat(CitationI18n.getLocale(), {
+      notation: 'compact', maximumSignificantDigits: 3
+    });
     history.slice(-12).forEach((item, index, visibleHistory) => {
-      const column = document.createElement('div'); column.className = 'annual-column';
-      const value = document.createElement('span'); value.className = 'annual-value'; value.textContent = formatNumber(item.citations);
+      const partial = item.year >= annual.incompleteFromYear;
+      const isCurrent = item.year === annual.currentYear;
+      const column = document.createElement('div'); column.className = `annual-column${partial ? ' partial-year' : ''}`;
+      const value = document.createElement('span'); value.className = 'annual-value'; value.textContent = chartNumbers.format(item.citations);
       value.hidden = visibleHistory.length > 8 && index % 2 === 1 && index !== visibleHistory.length - 1;
+      const track = document.createElement('div'); track.className = 'annual-bar-track';
       const bar = document.createElement('i'); bar.style.height = `${Math.max(4, item.citations / max * 100)}%`;
-      bar.title = `${item.year}: ${formatNumber(item.citations)} citations`;
-      const year = document.createElement('small'); year.textContent = item.year;
-      column.append(value, bar, year); chart.append(column);
+      const description = t(partial ? (isCurrent ? 'annualCurrentValue' : 'annualCachedValue') : 'annualValue', {
+        year: item.year, count: formatNumber(item.citations)
+      });
+      bar.title = annual.syncedAt ? t('annualAsOfDate', { value: description, date: formatDate(annual.syncedAt, true) }) : description;
+      bar.setAttribute('role', 'img'); bar.setAttribute('aria-label', bar.title);
+      const year = document.createElement('small'); year.textContent = `${item.year}${partial ? '*' : ''}`;
+      if (partial) year.setAttribute('aria-label', t(isCurrent ? 'annualCurrentLabel' : 'annualCachedLabel', { year: item.year }));
+      bar.append(value); track.append(bar);
+      column.append(track, year); chart.append(column);
     });
     chartCard.append(chart);
+    history.filter(item => item.year >= annual.incompleteFromYear).forEach(item => {
+      const note = document.createElement('p'); note.className = 'annual-note';
+      note.textContent = t(item.year === annual.currentYear ? 'annualPartialNote' : 'annualCachedNote', { year: item.year });
+      chartCard.append(note);
+    });
   } else {
-    const empty = document.createElement('p'); empty.className = 'insight-empty'; empty.textContent = 'Refresh this profile to load its annual citation history.'; chartCard.append(empty);
+    const empty = document.createElement('p'); empty.className = 'insight-empty'; empty.textContent = t('annualEmpty'); chartCard.append(empty);
   }
   const radarCard = document.createElement('article'); radarCard.className = 'insight-card radar-card';
-  radarCard.innerHTML = '<div class="insight-card-header"><div><h3>Impact radar</h3><p>Relative profile snapshot</p></div></div>';
-  radarCard.append(createImpactRadar(profile, state));
-  const note = document.createElement('p'); note.className = 'radar-note'; note.textContent = 'Signals are normalized for visual comparison, not an academic ranking.'; radarCard.append(note);
+  const radarHeader = document.createElement('div'); radarHeader.className = 'insight-card-header';
+  radarHeader.append(createInsightHeading(t('impactRadar'), t('profileSnapshot')));
+  radarCard.append(radarHeader);
+  const signals = getRadarSignals(profile, state, annual);
+  radarCard.append(createImpactRadar(profile, signals));
+  const note = document.createElement('p'); note.className = 'radar-note'; note.textContent = t('radarNote'); radarCard.append(note);
+  radarCard.append(createRadarHelp(signals));
   insights.append(chartCard, radarCard);
 }
 
-function renderState(state) {
+function renderState(state, { syncInputs = true } = {}) {
   currentState = state;
+  stateLoadError = null;
   const ownScholarId = state.ownScholarId || (state.scholarIds || [])[0] || '';
   const trackedScholarIds = state.trackedScholarIds || (state.scholarIds || []).filter(id => id !== ownScholarId);
   const orderedProfiles = [...(state.citationProfiles || [])]
@@ -780,9 +920,11 @@ function renderState(state) {
     }))
     .sort((a, b) => Number(b.isOwn) - Number(a.isOwn));
 
-  ownIdInput.value = ownScholarId;
-  idsInput.value = trackedScholarIds.join('\n');
-  summary.textContent = `Updated ${formatDate(state.lastUpdated)}`;
+  if (syncInputs) {
+    ownIdInput.value = ownScholarId;
+    idsInput.value = trackedScholarIds.join('\n');
+  }
+  summary.textContent = state.lastUpdated ? t('updated', { date: formatDate(state.lastUpdated) }) : t('notUpdated');
   renderMetrics(state);
   renderMonitorSummary(state);
   renderProfileFilter(orderedProfiles);
@@ -793,10 +935,20 @@ function renderState(state) {
   renderInsights(state, orderedProfiles);
 
   if (state.lastUpdateError) {
-    setStatus('Last refresh failed', true);
+    setStatus('lastRefreshFailed', true);
   } else if ((state.articleMonitorSummary || {}).partialProfiles > 0) {
-    setStatus('Partial coverage');
+    setStatus('partialCoverage');
   }
+}
+
+function renderLoadError(error) {
+  activity.replaceChildren(createEmptyState(t('loadDataFailed'), t('reloadHint'), true));
+  activity.setAttribute('aria-busy', 'false');
+  papers.replaceChildren(createEmptyState(t('loadPapersFailed'), t('reloadHint'), true));
+  papers.setAttribute('aria-busy', 'false');
+  profiles.replaceChildren(createEmptyState(t('loadProfilesFailed'), t('reloadHint'), true));
+  insights.replaceChildren(createEmptyState(t('loadDataFailed'), t('reloadHint'), true));
+  setStatus(error.message, true);
 }
 
 async function loadState({ clearStatus = true } = {}) {
@@ -808,30 +960,19 @@ async function loadState({ clearStatus = true } = {}) {
     const state = await sendMessage({ type: 'getState' });
     renderState(state || {});
   } catch (error) {
-    activity.replaceChildren(createEmptyState(
-      'Unable to load saved data',
-      'Reload the extension and try again.',
-      true
-    ));
-    activity.setAttribute('aria-busy', 'false');
-    papers.replaceChildren(createEmptyState(
-      'Unable to load saved papers',
-      'Reload the extension and try again.',
-      true
-    ));
-    papers.setAttribute('aria-busy', 'false');
-    profiles.replaceChildren(createEmptyState(
-      'Unable to load profiles',
-      'Reload the extension and try again.',
-      true
-    ));
-    setStatus(error.message, true);
+    stateLoadError = error;
+    renderLoadError(error);
   }
 }
 
 async function saveIds() {
+  if (!ownIdInput.value.trim()) {
+    setStatus('enterId', true);
+    ownIdInput.focus();
+    return;
+  }
   setBusy(true);
-  setStatus('Saving...');
+  setStatus('saving');
 
   try {
     const response = await sendMessage({
@@ -842,13 +983,13 @@ async function saveIds() {
 
     if (!response || !response.ok) {
       await loadState();
-      setStatus('Saved, refresh failed', true);
+      setStatus('savedRefreshFailed', true);
       return;
     }
 
     await loadState();
     setInputOpen(false);
-    setStatus('Saved and refreshed.');
+    setStatus('saved');
   } catch (error) {
     setStatus(error.message, true);
   } finally {
@@ -858,7 +999,7 @@ async function saveIds() {
 
 async function removeTrackedId(id) {
   setBusy(true);
-  setStatus('Removing...');
+  setStatus('removing');
 
   try {
     const response = await sendMessage({
@@ -868,12 +1009,12 @@ async function removeTrackedId(id) {
 
     if (!response || !response.ok) {
       await loadState();
-      setStatus('Removed, refresh failed', true);
+      setStatus('removedRefreshFailed', true);
       return;
     }
 
     await loadState();
-    setStatus('Profile removed.');
+    setStatus('removed');
   } catch (error) {
     setStatus(error.message, true);
   } finally {
@@ -883,18 +1024,18 @@ async function removeTrackedId(id) {
 
 async function refreshCitations() {
   setBusy(true);
-  setStatus('Checking profiles and papers...');
+  setStatus('checking');
 
   try {
     const response = await sendMessage({ type: 'refreshCitations' });
     if (!response || !response.ok) {
       await loadState();
-      setStatus('Refresh failed', true);
+      setStatus('refreshFailed', true);
       return;
     }
 
     await loadState();
-    setStatus('Refresh complete.');
+    setStatus('refreshed');
   } catch (error) {
     setStatus(error.message, true);
   } finally {
@@ -902,6 +1043,33 @@ async function refreshCitations() {
   }
 }
 
+themeSelect.addEventListener('change', async () => {
+  const previousTheme = currentTheme;
+  const nextTheme = themeSelect.value;
+  themeSelect.disabled = true;
+  applyTheme(nextTheme);
+  try {
+    await chrome.storage.local.set({ uiTheme: currentTheme });
+  } catch (_error) {
+    applyTheme(previousTheme);
+    setStatus('themeSaveFailed', true);
+  } finally {
+    themeSelect.disabled = false;
+  }
+});
+
+languageButton.addEventListener('click', async () => {
+  const nextLanguage = CitationI18n.getLanguage() === 'en' ? 'zh-CN' : 'en';
+  languageButton.disabled = true;
+  try {
+    await chrome.storage.local.set({ uiLanguage: nextLanguage });
+    applyLanguage(nextLanguage);
+  } catch (_error) {
+    setStatus('languageSaveFailed', true);
+  } finally {
+    languageButton.disabled = false;
+  }
+});
 saveButton.addEventListener('click', saveIds);
 refreshButton.addEventListener('click', refreshCitations);
 toggleInputButton.addEventListener('click', () => setInputOpen(inputPanel.hidden));
@@ -963,6 +1131,12 @@ viewEntries.forEach((entry, index) => {
 
 if (chrome.storage && chrome.storage.onChanged) {
   chrome.storage.onChanged.addListener((changes, areaName) => {
+    if (areaName === 'local' && changes.uiTheme) {
+      applyTheme(changes.uiTheme.newValue);
+    }
+    if (areaName === 'local' && changes.uiLanguage) {
+      applyLanguage(changes.uiLanguage.newValue || CitationI18n.getBrowserLanguage());
+    }
     if (areaName === 'local' && (
       changes.articleSnapshots
       || changes.latestArticleChanges
@@ -974,4 +1148,4 @@ if (chrome.storage && chrome.storage.onChanged) {
   });
 }
 
-document.addEventListener('DOMContentLoaded', loadState);
+document.addEventListener('DOMContentLoaded', initializePopup);

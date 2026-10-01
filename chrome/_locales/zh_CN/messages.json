@@ -1,0 +1,5 @@
+{
+  "extensionName": { "message": "Citation Tracker" },
+  "extensionDescription": { "message": "追踪 Google Scholar 论文的被引次数和变化，查看年度被引趋势与学术影响力指标。" },
+  "actionTitle": { "message": "Google Scholar Citations" }
+}

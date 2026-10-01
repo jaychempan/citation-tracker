@@ -75,6 +75,7 @@ function loadBackground(initialStorage = {}, fetchImpl = async () => {
   const eventTarget = () => ({ addListener() {} });
   const chrome = {
     storage: {
+      onChanged: eventTarget(),
       local: {
         async get(keys) {
           if (!keys) {
@@ -141,9 +142,21 @@ function loadBackground(initialStorage = {}, fetchImpl = async () => {
     clearTimeout
   });
 
+  context.importScripts = filename => vm.runInContext(
+    fs.readFileSync(path.join(__dirname, '..', 'chrome', filename), 'utf8'), context, { filename }
+  );
   vm.runInContext(backgroundSource, context, { filename: 'background.js' });
   return { context, storage, action };
 }
+
+test('localizes the toolbar title using the stored language preference', async () => {
+  const { context, action, storage } = loadBackground({ uiLanguage: 'zh-CN' });
+  await context.setActionTitle(1200, 2, { changedArticles: 1, citationGain: 2 });
+  assert.equal(action.title, 'Citation Tracker：我的被引次数 1,200（被引变化：+2；1 篇论文被引增加，合计 +2 次）');
+  storage.uiLanguage = 'en';
+  await context.setActionTitle(1200, null);
+  assert.match(action.title, /no previous update/);
+});
 
 test('parses article metadata, stable IDs, citation links, and encoded text', () => {
   const { context } = loadBackground();
@@ -408,6 +421,7 @@ test('a first refresh stores a baseline and the next refresh records detailed ac
   assert.equal(storage.articleMonitorSummary.trackedArticles, 2);
   assert.equal(storage.articleMonitorSummary.baselineReady, false);
   assert.equal(storage.articleCitationEvents.length, 0);
+  assert.equal(storage.citationProfiles[0].citationHistoryUpdatedAt, storage.lastUpdated);
 
   currentHtml = profileHtml({
     total: 9,
@@ -429,6 +443,28 @@ test('a first refresh stores a baseline and the next refresh records detailed ac
   assert.equal(storage.articleCitationEvents[0].currentCitations, 5);
   assert.equal(storage.citationProfiles[0].trackedArticles, 2);
   assert.match(action.title, /1 articles gained \+2/);
+});
+
+test('preserves the profile annual-data timestamp on failure, including legacy caches', async () => {
+  const cachedAt = '2025-07-25T08:00:00.000Z';
+  for (const timestamp of [cachedAt, undefined]) {
+    const { context, storage } = loadBackground({
+      ownScholarId: 'profile1',
+      scholarIds: ['profile1'],
+      lastUpdated: cachedAt,
+      citationTotal: 7,
+      ownCitationTotal: 7,
+      citationProfiles: [{
+        id: 'profile1', citations: '7', citationsNumber: 7,
+        citationHistoryUpdatedAt: timestamp,
+        citationHistory: [{ year: 2024, citations: 5 }, { year: 2025, citations: 2 }]
+      }]
+    }, async () => { throw new Error('Network offline'); });
+    await context.performCitationUpdate();
+    assert.equal(storage.citationProfiles[0].citationHistoryUpdatedAt, cachedAt);
+    assert.notEqual(storage.lastUpdated, cachedAt);
+    assert.match(storage.citationProfiles[0].error, /Network offline/);
+  }
 });
 
 test('prunes expired, duplicate, and removed-profile events', () => {

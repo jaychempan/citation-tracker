@@ -1,0 +1,24 @@
+{
+  "provider": "Google Fonts",
+  "downloaded": "2026-10-01",
+  "fonts": [
+    {
+      "family": "Roboto",
+      "file": "roboto-latin.woff2",
+      "license": "Roboto-OFL.txt",
+      "weights": "400–700",
+      "sourceUrl": "https://fonts.gstatic.com/l/font?kit=KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMW36eA1EfUf3ZescuDW22jij2v3YN80IY_EtG3_T0cMbdexkBC_e56ahd00LFSDbU6TZZqU5VTyqkz86-5ogPfK1oMXqDXcyWqi_cyvSjuYR_C4WPqHYWuyePYF3DTySX6UY8qQ-39ZYx-VBaNEJs2frnkgCDr6aRvZlbskAcABVHR8fD33w5-QwZp9LmR2vyfYQXVGv6oWtn98jCwUVLmEzFRAZvSqluRcaGOHJjMycZHHUYoCH0K4mhhRG7aRJ0pYQvUMlF0yKMlQrx2jhrVyk-&skey=a0a0114a1dcab3ac&v=v51",
+      "sha256": "3dfa7a99e08d1d1ac99a3b971e0203eaf22f8c43d6a605485038f24372ec6f99",
+      "bytes": 26104
+    },
+    {
+      "family": "Noto Sans SC",
+      "file": "noto-sans-sc-site.woff2",
+      "license": "NotoSansSC-OFL.txt",
+      "weights": "400–700",
+      "sourceUrl": "https://fonts.gstatic.com/l/font?kit=k3kXo84MPvpLmixcA63oeALhLIiP-Q_MMKV5m5ZlPQ6E6HgwfP2tSLeIl8MO7E61mOTxAtHUb-H2tzRt4TykY961Or_7YifND-c4V61ikKXmXmmbJ3B9ZDny5V-l3o0hBhGpga5gX3e_gPQpvrASdtndo3CUnyJmjo5uWMEvRxGldFnU2w96HKbduhIHgR7eBgd_hgzPY2nLMt7t1zmgOymTgtxSz5orjJYMxmWNlPrprKQoNnWeZhBfwL8vof-vTaHrqm5maYm3Yeue5y30yX_rjQOClajW84gMIfyo6ylYmo2rFYnckkUEFhvMeBJYVPdJkKOlUDMAuoV81bcP8WvIw3GJcrF16nFW4RDZJN_K3gd6DoW15_osYMas2d_8R1y1hgWeDweaaCxJ8lscGr16_92JTi63qC_pVUBh9zaQIMRLwHCnIsaLT-vikwBZPQSJ5PoJWyg_b2f30Z81G4CkgdSRLIPWpZDDiOMf8MjUZsY9eDfnW15WKE8Ptv4hf0c1pKUy4Wan9LMv84u-Ou60m71S02jAaJRsMVbCHEByvZAwKXOvJjzAojE9hG4ovIeM_DnqbLj_4gFc9wUM9Kf5iPRlN0cTccsAyE8Rg_1lgbz0jYSfNzZKAaqcYIzCqyZVBPixM1ri7_CPPe0FpNiHhmyBzHhzHoOO1MlNMo-a9dZpdgdfKZOywyD6YC1AfjPC7_eHcMiW_LIsAslQbf9Q9aublJJDh6N92uGEKBB2Vo3mgLtAyzsJWJFX4lo02TBbLbo5sSvQ6dUyV7Uk8G8AsXfsiBiEXEVpIVDUyCyvwvu1t8dUXQlak4XRO4esdYdGB8jhrno2-5PeMRGpOyQ3zcHE6MXDvIBcoPyMobuhBhKLq25hNKQpFGsCOIZiAJBArtN0a5M3Uy_jiPeVH1vcWBePt0dV9Vy5I03Gx0UaJtmpFicK6KQ4Q55kk13hNN6pytixocQcybiEXIT-11GxF1YuMR7GQD75fsDULVD3RVWpqzLN697zY_o1bxP337kOCqepHyTQTWpLt2kdqPU9C8OTZlthQdWJIAgHK0UqcUJ_ly9vGhOn-dtseLWwOEkLcCiwSJL56fFvRpnYRxQ7X-LfDE_dpPIP0B2LOJ2igL1-m3gTpCwsUgjALpW1jqoK8LtTkLydldbiZK70dZAXBbj4Pb8UsEZ_BJ8reV9VIkNrNsEhAXFFLLyym_nydrhNgyMxEpin7AfFlW-nRvaqkf_9iLq3TZI9op5-6b7wpXn1zsBSOn7MzsuRyPpDcdMm0dk3-cld-OvYURBrCwRp0hhUAc2oahm_nX6TnF7lH_dQuTrk0nKt7TLWSQ9GfhuLdjpJddU3YEILJxElfUlgOrFjjQzgvSjaC0O3BX2MK5kD4sBiKN2XbDrO6Ia03cT_-RwDHC6cP9xQ2q5gEJXvax-CBAYcJmOwtSCImbnIkQEMJczpzTF4zumw-gBUUJ17JYgZPlY2Yh4n_ZSBOpD3t9tUsE321pdsCc4lJbYSlUib6gvoIPdxr4-U1s9D5pkCLB4psuO1uKTPTZSC9URW7dH_b9-98CJLGrWR1YwPSbOdT0T5EKI5LJgtWXVS6reYSYPLmVEEMY9zg9BsNgcslzD1iq1btZrgPCNBhjQa_obdxnoUv_p5PFw&skey=cf0bb10b5602fdc3&v=v40",
+      "sha256": "980d73b959e3895622f3599f997ae5b918588a389ef2e74750d9701fe37631f0",
+      "bytes": 115492
+    }
+  ]
+}

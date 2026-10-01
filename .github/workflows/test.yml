@@ -5,12 +5,16 @@ on:
     paths:
       - 'chrome/**'
       - 'tests/**'
+      - 'website/**'
+      - 'scripts/**'
       - 'package.json'
       - '.github/workflows/test.yml'
   pull_request:
     paths:
       - 'chrome/**'
       - 'tests/**'
+      - 'website/**'
+      - 'scripts/**'
       - 'package.json'
       - '.github/workflows/test.yml'
 

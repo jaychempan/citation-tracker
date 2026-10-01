@@ -1,3 +1,5 @@
+importScripts('i18n.js');
+
 const DEFAULT_SCHOLAR_IDS = ['DhtAFkwAAAAJ'];
 const UPDATE_ALARM = 'periodicUpdate';
 const SCHOLAR_PAGE_SIZE = 100;
@@ -493,13 +495,17 @@ async function setBadgeForTotal(total) {
   chrome.action.setBadgeText({ text: formatBadgeCount(total) });
 }
 
-function setActionTitle(total, delta, monitorSummary) {
+async function setActionTitle(total, delta, monitorSummary = {}) {
+  const { uiLanguage } = await getFromStorage(['uiLanguage']);
+  CitationI18n.setLanguage(uiLanguage || CitationI18n.getBrowserLanguage());
+  const { t } = CitationI18n;
+  const change = delta === null || delta === undefined ? t('noPreviousUpdate') : formatDelta(delta);
   const articleSummary = monitorSummary.changedArticles > 0
-    ? `; ${monitorSummary.changedArticles} articles gained ${formatDelta(monitorSummary.citationGain)}`
+    ? t('actionGains', { count: monitorSummary.changedArticles, delta: formatDelta(monitorSummary.citationGain) })
     : '';
 
-  chrome.action.setTitle({
-    title: `Citation Tracker: ${formatNumber(total)} own citations (${formatDelta(delta)} total change${articleSummary})`
+  await chrome.action.setTitle({
+    title: t('actionTitle', { total: formatNumber(total), delta: change, articles: articleSummary })
   });
 }
 
@@ -513,6 +519,7 @@ async function performCitationUpdate() {
       'citationTotal',
       'ownCitationTotal',
       'citationProfiles',
+      'lastUpdated',
       'articleSnapshots',
       'articleCitationEvents'
     ]);
@@ -527,6 +534,7 @@ async function performCitationUpdate() {
       if (result.status === 'fulfilled') {
         return {
           ...result.value,
+          citationHistoryUpdatedAt: attemptedAt,
           isOwn: id === config.ownScholarId
         };
       }
@@ -547,6 +555,7 @@ async function performCitationUpdate() {
           hIndex: 'N/A',
           i10Index: 'N/A'
         }),
+        citationHistoryUpdatedAt: previousProfile?.citationHistoryUpdatedAt || previousState.lastUpdated || null,
         isOwn: id === config.ownScholarId,
         articles: previousArticles,
         articleCount: previousArticles.length,
@@ -619,7 +628,7 @@ async function performCitationUpdate() {
     });
 
     await setBadgeForTotal(badgeTotal);
-    setActionTitle(badgeTotal, ownDelta, monitorSummary);
+    await setActionTitle(badgeTotal, ownDelta, monitorSummary);
     await setStorage({
       citations: formatNumber(total),
       citationTotal: total,
@@ -703,6 +712,18 @@ chrome.runtime.onStartup.addListener(() => {
 chrome.alarms.onAlarm.addListener(alarm => {
   if (alarm.name === UPDATE_ALARM) {
     updateCitations();
+  }
+});
+
+chrome.storage.onChanged.addListener((changes, areaName) => {
+  if (areaName === 'local' && changes.uiLanguage) {
+    getFromStorage(['ownCitationTotal', 'ownCitationDelta', 'articleMonitorSummary']).then(state => {
+      if (Number.isFinite(state.ownCitationTotal)) {
+        return setActionTitle(state.ownCitationTotal, state.ownCitationDelta, state.articleMonitorSummary);
+      }
+      CitationI18n.setLanguage(changes.uiLanguage.newValue || CitationI18n.getBrowserLanguage());
+      return chrome.action.setTitle({ title: CitationI18n.t('pageTitle') });
+    });
   }
 });
 

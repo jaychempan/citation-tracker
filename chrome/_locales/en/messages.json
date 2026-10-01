@@ -1,0 +1,5 @@
+{
+  "extensionName": { "message": "Citation Tracker" },
+  "extensionDescription": { "message": "Track citation totals, annual trends, research impact, and paper-level citation gains." },
+  "actionTitle": { "message": "Google Scholar Citations" }
+}

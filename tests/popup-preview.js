@@ -27,6 +27,7 @@ const previewState = {
       citationsNumber: 820884,
       hIndex: '77',
       i10Index: '89',
+      citationHistoryUpdatedAt: previewNow,
       citationHistory: [
         { year: 2016, citations: 5586 }, { year: 2017, citations: 13909 },
         { year: 2018, citations: 30268 }, { year: 2019, citations: 52611 },
@@ -48,6 +49,7 @@ const previewState = {
       citationsNumber: 1633,
       hIndex: '21',
       i10Index: '39',
+      citationHistoryUpdatedAt: previewNow,
       citationHistory: [
         { year: 2022, citations: 48 }, { year: 2023, citations: 112 },
         { year: 2024, citations: 284 }, { year: 2025, citations: 506 },
@@ -277,6 +279,23 @@ if (previewMode === 'error') {
 }
 
 window.chrome = {
+  i18n: {
+    getUILanguage: () => previewParams.get('lang') || navigator.language
+  },
+  storage: {
+    local: {
+      async get() {
+        return {
+          uiLanguage: previewParams.get('lang') || localStorage.getItem('previewLanguage'),
+          uiTheme: previewParams.get('theme') || localStorage.getItem('previewTheme')
+        };
+      },
+      async set(values) {
+        if (values.uiLanguage) localStorage.setItem('previewLanguage', values.uiLanguage);
+        if (values.uiTheme) localStorage.setItem('previewTheme', values.uiTheme);
+      }
+    }
+  },
   runtime: {
     async sendMessage(message) {
       if (message.type === 'getState') {

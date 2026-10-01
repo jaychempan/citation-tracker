@@ -1,9 +1,10 @@
 {
   "name": "citation-tracker",
   "private": true,
-  "version": "1.4.0",
+  "version": "1.5.0",
   "scripts": {
     "test": "node --test tests/*.test.js",
-    "check": "node --check chrome/background.js && node --check chrome/paper-utils.js && node --check chrome/popup.js && node --check website/i18n.js && node --check tests/popup-preview.js"
+    "check": "node --check chrome/background.js && node --check chrome/i18n.js && node --check chrome/paper-utils.js && node --check chrome/popup.js && node --check website/i18n.js && node --check website/script.js && node --check tests/popup-preview.js",
+    "package": "python3 scripts/package-extension.py"
   }
 }
